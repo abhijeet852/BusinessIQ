@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8000/api';
+// Default to live Render backend URL, or fallback to environment variable / localhost
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://businessiq.onrender.com/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
