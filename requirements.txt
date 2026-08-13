@@ -1,10 +1,20 @@
-# Core Dependencies for Business Analytics & Customer Insights Platform
+# Core Analytics & Data Processing
 streamlit>=1.30.0
 pandas>=2.0.0
 numpy>=1.24.0
 plotly>=5.18.0
 
-# Database Dependencies (Phase 5)
+# Backend REST API Server
+fastapi>=0.100.0
+uvicorn>=0.22.0
+pydantic>=2.0.0
+python-multipart>=0.0.6
+openpyxl>=3.1.0
+
+# Machine Learning
+scikit-learn>=1.3.0
+
+# Database Dependencies
 mysql-connector-python>=8.0.0
 pymysql>=1.1.0
 sqlalchemy>=2.0.0
