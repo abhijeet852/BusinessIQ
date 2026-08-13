@@ -15,27 +15,42 @@ class ErrorBoundary extends Component {
 
   componentDidCatch(error, errorInfo) {
     console.error('DataPulse ErrorBoundary caught an exception:', error, errorInfo);
+    // Auto clear broken session tokens
+    try {
+      localStorage.removeItem('datapulse_token');
+      localStorage.removeItem('datapulse_user');
+    } catch (e) {}
   }
 
   handleReset = () => {
-    localStorage.clear();
-    window.location.reload();
+    try {
+      localStorage.clear();
+      sessionStorage.clear();
+    } catch (e) {}
+    window.location.href = window.location.origin + window.location.pathname;
   };
 
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-slate-900 text-white flex flex-col items-center justify-center p-6 text-center font-sans">
-          <div className="max-w-md space-y-4 bg-slate-800 p-8 rounded-2xl border border-slate-700 shadow-2xl">
-            <h2 className="text-xl font-black text-white">DATAPULSE Session Reset</h2>
-            <p className="text-xs text-slate-300">
-              A temporary browser caching issue occurred. Click below to clear local state and return to DataPulse.
-            </p>
+        <div className="min-h-screen bg-slate-900 text-white flex flex-col items-center justify-center p-6 text-center font-sans selection:bg-blue-600 selection:text-white">
+          <div className="max-w-md w-full space-y-5 bg-slate-800/90 backdrop-blur-md p-8 rounded-2xl border border-slate-700 shadow-2xl animate-fade-in">
+            <div className="w-12 h-12 rounded-2xl bg-blue-600/20 text-blue-400 border border-blue-500/30 flex items-center justify-center mx-auto text-xl font-bold">
+              ⚡
+            </div>
+            
+            <div className="space-y-1.5">
+              <h2 className="text-xl font-black text-white tracking-tight">DATAPULSE Session Reset</h2>
+              <p className="text-xs text-slate-300 font-medium leading-relaxed">
+                Click below to clear temporary browser session cache and enter DataPulse.
+              </p>
+            </div>
+
             <button
               onClick={this.handleReset}
-              className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-md transition-all"
+              className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold text-xs rounded-xl shadow-lg shadow-blue-600/20 transition-all flex items-center justify-center gap-2"
             >
-              Reset Session & Load DataPulse
+              <span>Reset Session & Open DataPulse</span>
             </button>
           </div>
         </div>
