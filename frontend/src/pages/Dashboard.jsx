@@ -4,7 +4,6 @@ import { formatCurrency, formatCompactCurrency } from '../utils/formatters';
 import {
   TrendingUp,
   ShoppingBag,
-  Users,
   ArrowUpRight,
   ArrowRight,
   Sparkles,
@@ -48,7 +47,7 @@ const CustomChartTooltip = ({ active, payload, label }) => {
     const margin = sales > 0 ? ((profit / sales) * 100).toFixed(1) : 0;
 
     return (
-      <div className="bg-slate-900 text-white p-3 rounded-xl shadow-xl text-xs space-y-1 border border-slate-800 animate-fade-in font-sans">
+      <div className="bg-slate-900 text-white p-3.5 rounded-xl shadow-xl text-xs space-y-1.5 border border-slate-800 font-sans">
         <div className="font-semibold text-slate-300 pb-1 border-b border-slate-800">{label}</div>
         <div className="flex items-center justify-between gap-6 pt-0.5">
           <span className="text-slate-400 font-normal">Revenue:</span>
@@ -132,11 +131,11 @@ const Dashboard = ({ filters, setActiveTab }) => {
   if (loading || !data) {
     return (
       <div className="space-y-6 animate-pulse">
-        <div className="h-28 bg-slate-200 rounded-xl"></div>
+        <div className="h-32 bg-slate-200 rounded-xl"></div>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="h-32 bg-slate-200 rounded-xl md:col-span-2"></div>
-          <div className="h-32 bg-slate-200 rounded-xl"></div>
-          <div className="h-32 bg-slate-200 rounded-xl"></div>
+          <div className="h-36 bg-slate-200 rounded-xl md:col-span-2"></div>
+          <div className="h-36 bg-slate-200 rounded-xl"></div>
+          <div className="h-36 bg-slate-200 rounded-xl"></div>
         </div>
         <div className="h-80 bg-slate-200 rounded-xl"></div>
       </div>
@@ -182,49 +181,49 @@ const Dashboard = ({ filters, setActiveTab }) => {
   const alertList = Array.isArray(alerts) ? alerts : (alerts && Array.isArray(alerts.alerts) ? alerts.alerts : []);
 
   return (
-    <div className="space-y-6 font-sans animate-fade-in">
+    <div className="space-y-6 font-sans selection:bg-blue-600 selection:text-white">
       {/* =================================================================== */}
-      {/* 1. HERO SECTION: BUSINESS OVERVIEW & INTEGRATED HEALTH SCORE       */}
+      {/* 1. BUSINESS OVERVIEW & BUSINESS HEALTH GAUGE SCORE CARD            */}
       {/* =================================================================== */}
       <div className="bg-white rounded-xl border border-slate-200/80 p-6 shadow-2xs flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="space-y-2 max-w-xl">
           <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-[11px] font-medium">
-            <Zap className="w-3.5 h-3.5 text-blue-600" /> Executive Summary
+            <Zap className="w-3.5 h-3.5 text-blue-600" /> Executive Overview
           </div>
 
           <h2 className="text-xl lg:text-2xl font-bold text-slate-900 tracking-tight">
-            Your business is performing well this period.
+            Business Overview
           </h2>
 
-          <p className="text-xs text-slate-500 leading-relaxed font-normal">
-            Revenue is up <strong className="text-slate-800 font-semibold">12.4%</strong>, profit margin is <strong className="text-slate-800 font-semibold">23.9%</strong>, and customer retention is <strong className="text-slate-800 font-semibold">90.9%</strong>.
+          <p className="text-xs text-slate-500 font-normal leading-relaxed">
+            Your business is performing well this period. Revenue is up <strong className="text-slate-800 font-semibold">12.4%</strong>, profit margin is <strong className="text-slate-800 font-semibold">23.9%</strong>, and customer retention is <strong className="text-slate-800 font-semibold">90.9%</strong>.
           </p>
 
-          {/* Compact Factor Indicators (Unboxed) */}
+          {/* Factor Indicators */}
           {healthData?.components && (
             <div className="pt-2 flex flex-wrap items-center gap-2 text-[11px] font-normal text-slate-600">
-              <span className="px-2.5 py-1 bg-slate-50 rounded-md border border-slate-200/60">
+              <span className="px-2.5 py-1 bg-slate-50 rounded-lg border border-slate-200/70">
                 Revenue Trend: <strong className="text-slate-800 font-semibold">{healthData.components.revenue_growth?.score}</strong>
               </span>
-              <span className="px-2.5 py-1 bg-slate-50 rounded-md border border-slate-200/60">
+              <span className="px-2.5 py-1 bg-slate-50 rounded-lg border border-slate-200/70">
                 Profit Margin: <strong className="text-slate-800 font-semibold">{healthData.components.profitability?.score}</strong>
               </span>
-              <span className="px-2.5 py-1 bg-slate-50 rounded-md border border-slate-200/60">
+              <span className="px-2.5 py-1 bg-slate-50 rounded-lg border border-slate-200/70">
                 Retention: <strong className="text-slate-800 font-semibold">{healthData.components.customer_retention?.score}</strong>
               </span>
-              <span className="px-2.5 py-1 bg-slate-50 rounded-md border border-slate-200/60">
+              <span className="px-2.5 py-1 bg-slate-50 rounded-lg border border-slate-200/70">
                 Catalog Margin: <strong className="text-slate-800 font-semibold">{healthData.components.catalog_consistency?.score}</strong>
               </span>
             </div>
           )}
         </div>
 
-        {/* Integrated Circular Health Score Gauge */}
+        {/* Business Health Gauge Ring Score */}
         {healthData && (
           <div className="flex items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100 flex-shrink-0">
             <HealthRingGauge score={healthData.health_score} />
             <div className="space-y-0.5">
-              <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider block">Health Score</span>
+              <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider block">HEALTH SCORE</span>
               <div className="text-base font-bold text-slate-900">{healthData.status}</div>
               <span className="text-[10px] text-slate-500 font-normal block">Composite Health Index</span>
             </div>
@@ -233,13 +232,13 @@ const Dashboard = ({ filters, setActiveTab }) => {
       </div>
 
       {/* =================================================================== */}
-      {/* 2. REFINED KPI SECTION (PRIMARY REVENUE + COMPACT SUPPORTING)       */}
+      {/* 2. KPI CARDS (TOTAL REVENUE HERO + SUPPORTING PROFIT / ORDERS)     */}
       {/* =================================================================== */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        {/* PRIMARY METRIC: TOTAL REVENUE */}
+        {/* TOTAL REVENUE HERO CARD (PRIMARY KPI) */}
         <div className="md:col-span-2 bg-slate-900 text-white p-5 rounded-xl border border-slate-800 shadow-xs flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Total Revenue</span>
+            <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">TOTAL REVENUE</span>
             <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800/80">
               <ArrowUpRight className="w-3.5 h-3.5" /> +12.4% vs previous period
             </span>
@@ -247,32 +246,32 @@ const Dashboard = ({ filters, setActiveTab }) => {
 
           <div className="my-3 flex items-baseline justify-between">
             <div>
-              <div className="text-3xl font-bold text-white tracking-tight">
+              <div className="text-3xl lg:text-4xl font-bold text-white tracking-tight">
                 {formatCurrency(kpis?.total_sales, true)}
               </div>
               <p className="text-xs text-slate-400 mt-1 font-normal">
-                Gross sales revenue generated across all regions
+                Gross sales revenue generated across all territories
               </p>
             </div>
             <Sparkline color="#60A5FA" data={[12, 15, 18, 14, 22, 28, 25, 32]} />
           </div>
 
-          <div className="pt-2 border-t border-slate-800 text-xs text-slate-400 flex items-center justify-between">
+          <div className="pt-2 border-t border-slate-800 text-xs text-slate-400 flex items-center justify-between font-normal">
             <span>Average Order Value: <strong className="text-white font-medium">{formatCurrency(kpis?.avg_order_value)}</strong></span>
             <span>Target Achievement: <strong className="text-emerald-400 font-medium">104.2%</strong></span>
           </div>
         </div>
 
-        {/* SUPPORTING METRIC 1: PROFIT */}
+        {/* TOTAL PROFIT (SUPPORTING KPI) */}
         <div className="bg-white p-4.5 rounded-xl border border-slate-200/80 shadow-2xs flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Total Profit</span>
+            <span className="text-[11px] font-medium text-slate-500 uppercase tracking-wider">TOTAL PROFIT</span>
             <div className="w-6 h-6 rounded-md bg-emerald-50 text-emerald-600 flex items-center justify-center">
               <TrendingUp className="w-3.5 h-3.5" />
             </div>
           </div>
           <div className="my-2">
-            <div className="text-2xl font-bold text-slate-900 tracking-tight">
+            <div className="text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight">
               {formatCurrency(kpis?.total_profit, true)}
             </div>
             <div className="flex items-center gap-1 mt-1 text-[11px] font-medium text-emerald-600">
@@ -282,10 +281,10 @@ const Dashboard = ({ filters, setActiveTab }) => {
           <Sparkline color="#10B981" data={[8, 10, 12, 11, 16, 20, 19, 24]} />
         </div>
 
-        {/* SUPPORTING METRIC 2: ORDERS & CUSTOMERS */}
+        {/* ORDERS & ACCOUNTS (SUPPORTING KPI) */}
         <div className="bg-white p-4.5 rounded-xl border border-slate-200/80 shadow-2xs flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Orders & Accounts</span>
+            <span className="text-[11px] font-medium text-slate-500 uppercase tracking-wider">ORDERS & ACCOUNTS</span>
             <div className="w-6 h-6 rounded-md bg-purple-50 text-purple-600 flex items-center justify-center">
               <ShoppingBag className="w-3.5 h-3.5" />
             </div>
@@ -310,7 +309,9 @@ const Dashboard = ({ filters, setActiveTab }) => {
       <div className="bg-white p-6 rounded-xl border border-slate-200/80 shadow-2xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
-            <h3 className="font-semibold text-slate-900 text-base tracking-tight">Revenue & Profit Performance</h3>
+            <h3 className="font-semibold text-slate-900 text-base lg:text-lg tracking-tight">
+              Revenue & Profit Performance
+            </h3>
             <p className="text-xs text-slate-500 mt-0.5 font-normal">How business performance changed over time (INR)</p>
           </div>
 
@@ -349,10 +350,10 @@ const Dashboard = ({ filters, setActiveTab }) => {
       </div>
 
       {/* =================================================================== */}
-      {/* 4. WHAT'S HAPPENING? & PRIORITY ACTIONS (REFINED & COMPACT)         */}
+      {/* 4. WHAT'S HAPPENING? INSIGHTS & PRIORITY ACTIONS                    */}
       {/* =================================================================== */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* WHAT'S HAPPENING? INSIGHTS (CLEAN UNBOXED LIST) */}
+        {/* WHAT'S HAPPENING? */}
         <div className="bg-white p-5.5 rounded-xl border border-slate-200/80 shadow-2xs space-y-4">
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-blue-600" />
@@ -369,7 +370,7 @@ const Dashboard = ({ filters, setActiveTab }) => {
           </div>
         </div>
 
-        {/* PRIORITY ACTIONS (ACCENT INDICATORS) */}
+        {/* PRIORITY ACTIONS */}
         <div className="bg-white p-5.5 rounded-xl border border-slate-200/80 shadow-2xs space-y-4">
           <div className="flex items-center gap-2">
             <Lightbulb className="w-4 h-4 text-amber-600" />
@@ -403,7 +404,7 @@ const Dashboard = ({ filters, setActiveTab }) => {
       {/* 5. REGIONAL PERFORMANCE RANKING & CUSTOMER HEALTH                  */}
       {/* =================================================================== */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* REGIONAL PERFORMANCE (CLEAN NUMBERED LIST) */}
+        {/* REGIONAL PERFORMANCE */}
         <div className="bg-white p-5.5 rounded-xl border border-slate-200/80 shadow-2xs space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold text-slate-900 text-base tracking-tight">Regional Performance</h3>
@@ -479,13 +480,13 @@ const Dashboard = ({ filters, setActiveTab }) => {
             onClick={() => setActiveTab && setActiveTab('customers')}
             className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium rounded-lg transition-all shadow-2xs flex items-center justify-center gap-1.5"
           >
-            Customer 360 Analytics <ArrowRight className="w-3.5 h-3.5" />
+            Inspect Customer 360 Profiles <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
 
       {/* =================================================================== */}
-      {/* 6. PRODUCT PERFORMANCE TABLE & COMPACT TOP OPPORTUNITY             */}
+      {/* 6. PRODUCT PERFORMANCE TABLE & TOP OPPORTUNITY CARD                 */}
       {/* =================================================================== */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* PRODUCT PERFORMANCE TABLE */}
@@ -537,7 +538,7 @@ const Dashboard = ({ filters, setActiveTab }) => {
           </div>
         </div>
 
-        {/* COMPACT TOP OPPORTUNITY CALLOUT */}
+        {/* TOP OPPORTUNITY CARD */}
         {topProductOpportunity && (
           <div className="bg-blue-50/70 p-5.5 rounded-xl border border-blue-100 shadow-2xs flex flex-col justify-between space-y-3">
             <div>
