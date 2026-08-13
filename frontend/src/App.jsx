@@ -27,13 +27,24 @@ function App() {
   useEffect(() => {
     // Check saved authentication session
     const checkAuth = async () => {
-      const savedUser = localStorage.getItem('datapulse_user');
-      if (savedUser && token) {
-        setUser(JSON.parse(savedUser));
+      try {
+        const savedUser = localStorage.getItem('datapulse_user');
+        if (savedUser && savedUser !== 'undefined' && token) {
+          setUser(JSON.parse(savedUser));
+        } else if (!token) {
+          setUser(null);
+        }
+      } catch (err) {
+        console.error('Invalid saved user session:', err);
+        localStorage.removeItem('datapulse_user');
+        localStorage.removeItem('datapulse_token');
+        setUser(null);
+        setToken(null);
       }
     };
     checkAuth();
   }, [token]);
+
 
   useEffect(() => {
     const fetchOptions = async () => {
