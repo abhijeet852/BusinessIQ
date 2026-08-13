@@ -114,6 +114,32 @@ class TestDataPulsePlatform(unittest.TestCase):
         self.assertIn("recommended_business_action", c360)
         self.assertIn("explainability_factors", c360)
 
+    def test_authentication_and_jwt(self):
+        """Test password hashing, verification, JWT creation & decoding."""
+        from src.modules.auth import hash_password, verify_password, create_jwt_token, decode_jwt_token, authenticate_user
+
+        raw_pwd = "my-secret-password-123"
+        hashed = hash_password(raw_pwd)
+        self.assertTrue(verify_password(raw_pwd, hashed))
+        self.assertFalse(verify_password("wrong-password", hashed))
+
+        payload = {"user_id": 1, "email": "admin@datapulse.com", "role": "ADMIN"}
+        token = create_jwt_token(payload)
+        decoded = decode_jwt_token(token)
+        self.assertIsNotNone(decoded)
+        self.assertEqual(decoded["email"], "admin@datapulse.com")
+        self.assertEqual(decoded["role"], "ADMIN")
+
+        # Test Seed User Accounts
+        admin_acc = authenticate_user("admin@datapulse.com", "admin123")
+        self.assertIsNotNone(admin_acc)
+        self.assertEqual(admin_acc["role"], "ADMIN")
+
+        analyst_acc = authenticate_user("analyst@datapulse.com", "analyst123")
+        self.assertIsNotNone(analyst_acc)
+        self.assertEqual(analyst_acc["role"], "ANALYST")
+
 
 if __name__ == "__main__":
     unittest.main()
+

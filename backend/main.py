@@ -20,15 +20,22 @@ import sys
 import os
 import io
 from typing import Optional, List
-from fastapi import FastAPI, UploadFile, File, Query, HTTPException, Response
+from fastapi import FastAPI, UploadFile, File, Query, HTTPException, Response, Header, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
 import pandas as pd
 import numpy as np
 
 # Add parent directory to sys.path to import src package
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
+from src.modules.auth import (
+    authenticate_user,
+    create_jwt_token,
+    decode_jwt_token,
+    init_users_table,
+)
 from src.modules.data_loader import load_sales_data
 from src.modules.db_connector import get_db_connector
 from src.modules.analytics import (
@@ -51,10 +58,13 @@ from src.modules.sales_forecasting import fit_sales_forecast
 from src.utils.helpers import get_system_status
 
 app = FastAPI(
-    title="BusinessIQ REST API",
-    description="Business Analytics & Customer Insights Platform API Server",
-    version="2.0.0",
+    title="DataPulse REST API",
+    description="Business Data Intelligence & Prediction Platform API Server",
+    version="2.5.0",
 )
+
+# Initialize database users table on startup
+init_users_table()
 
 # Configure CORS Middleware for Frontend SPA (React Vite / Next)
 app.add_middleware(
@@ -64,6 +74,58 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Pydantic Schemas
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+
+def get_current_user(authorization: Optional[str] = Header(None)) -> Optional[dict]:
+    """Dependency helper to extract and decode JWT Bearer token."""
+    if not authorization:
+        return None
+    token = authorization.replace("Bearer ", "").strip()
+    return decode_jwt_token(token)
+
+
+def require_admin(authorization: Optional[str] = Header(None)) -> dict:
+    """Dependency helper enforcing ADMIN role authorization on endpoints."""
+    user = get_current_user(authorization)
+    if not user:
+        raise HTTPException(status_code=401, detail="Authentication token missing or expired.")
+    if user.get("role") != "ADMIN":
+        raise HTTPException(status_code=403, detail="Forbidden! Administrative permissions required.")
+    return user
+
+
+# -----------------------------------------------------------------------------
+# 0. AUTHENTICATION & SESSION ENDPOINTS
+# -----------------------------------------------------------------------------
+@app.post("/api/auth/login")
+def api_login(req: LoginRequest):
+    """User Login endpoint returning JWT Bearer token and role profile."""
+    user = authenticate_user(req.email, req.password)
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid email or password credentials.")
+
+    token = create_jwt_token(user)
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "user": user,
+    }
+
+
+@app.get("/api/auth/me")
+def api_auth_me(authorization: Optional[str] = Header(None)):
+    """Returns profile for active authenticated session."""
+    user = get_current_user(authorization)
+    if not user:
+        # Default guest session if not authenticated
+        return {"user": {"email": "guest@datapulse.com", "name": "Guest User", "role": "ANALYST"}}
+    return {"user": user}
+
 
 # Global dataset state
 DATA_FILEPATH = "data/sales.csv"

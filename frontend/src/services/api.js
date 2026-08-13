@@ -10,6 +10,25 @@ const api = axios.create({
   },
 });
 
+// Interceptor to inject JWT Authorization header
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('datapulse_token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+export const loginUser = async (email, password) => {
+  const res = await api.post('/auth/login', { email, password });
+  return res.data;
+};
+
+export const getAuthMe = async () => {
+  const res = await api.get('/auth/me');
+  return res.data;
+};
+
 export const getHealth = async () => {
   const res = await api.get('/health');
   return res.data;

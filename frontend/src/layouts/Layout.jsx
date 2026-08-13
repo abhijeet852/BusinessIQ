@@ -8,22 +8,20 @@ import {
   LineChart,
   UserCheck,
   ShieldAlert,
-  UploadCloud,
+  Database,
   FileSpreadsheet,
   Settings,
   User,
   Menu,
   X,
-  Activity,
-  CheckCircle2,
-  GitCommit,
-  Award,
+  Zap,
   Filter,
   Calendar,
-  Zap,
+  LogOut,
+  Shield,
 } from 'lucide-react';
 
-const Layout = ({ activeTab, setActiveTab, children, filters, setFilters, filterOptions }) => {
+const Layout = ({ activeTab, setActiveTab, children, filters, setFilters, filterOptions, user, onLogout }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   // Grouped Navigation Structure for DataPulse
@@ -39,21 +37,16 @@ const Layout = ({ activeTab, setActiveTab, children, filters, setFilters, filter
       ],
     },
     {
-      title: 'DATA',
-      items: [
-        { id: 'upload', name: 'Data Upload', icon: UploadCloud },
-        { id: 'data_quality', name: 'Data Quality Report', icon: Award },
-        { id: 'lineage', name: 'Data Lineage', icon: GitCommit },
-        { id: 'pipeline', name: 'Pipeline Monitor', icon: Activity },
-      ],
-    },
-    {
-      title: 'PREDICTIVE',
+      title: 'INTELLIGENCE',
       items: [
         { id: 'segmentation', name: 'Customer Segments', icon: UserCheck },
         { id: 'churn', name: 'Churn Prediction', icon: ShieldAlert },
         { id: 'forecast', name: 'Sales Forecast', icon: LineChart },
       ],
+    },
+    {
+      title: 'DATA',
+      items: [{ id: 'data_management', name: 'Data Management', icon: Database }],
     },
     {
       title: 'REPORTING',
@@ -67,7 +60,7 @@ const Layout = ({ activeTab, setActiveTab, children, filters, setFilters, filter
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row font-sans">
-      {/* Mobile Header */}
+      {/* Mobile Top Header */}
       <div className="md:hidden bg-slate-900 text-white flex items-center justify-between p-4 border-b border-slate-800">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold">
@@ -97,7 +90,7 @@ const Layout = ({ activeTab, setActiveTab, children, filters, setFilters, filter
             </div>
             <div>
               <h1 className="font-bold text-white text-base tracking-tight leading-none">DATAPULSE</h1>
-              <p className="text-[10px] text-slate-400 mt-1 font-medium">Data Intelligence & Prediction</p>
+              <p className="text-[10px] text-slate-400 mt-1 font-medium">Business Data Intelligence</p>
             </div>
           </div>
 
@@ -134,16 +127,32 @@ const Layout = ({ activeTab, setActiveTab, children, filters, setFilters, filter
           </nav>
         </div>
 
-        {/* Student Profile Footer */}
-        <div className="p-3 border-t border-slate-800/80">
-          <div className="flex items-center gap-2.5 px-3 py-2 bg-slate-800/40 rounded-lg border border-slate-800">
-            <div className="w-7 h-7 rounded-full bg-slate-700/80 flex items-center justify-center text-slate-300 font-semibold text-xs border border-slate-600/60">
-              <User className="w-3.5 h-3.5 text-slate-300" />
+        {/* User Profile Footer & Logout Button */}
+        <div className="p-3 border-t border-slate-800/80 space-y-2">
+          <div className="flex items-center justify-between px-3 py-2 bg-slate-800/40 rounded-lg border border-slate-800">
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-full bg-slate-700/80 flex items-center justify-center text-slate-300 font-semibold text-xs border border-slate-600/60">
+                <User className="w-3.5 h-3.5 text-slate-300" />
+              </div>
+              <div className="text-xs truncate">
+                <div className="font-semibold text-slate-200 text-[11px] truncate">{user?.name || 'Abhijeet Admin'}</div>
+                <div className="flex items-center gap-1 mt-0.5">
+                  <span className={`px-1.5 py-0.2 rounded text-[9px] font-bold ${
+                    user?.role === 'ADMIN' ? 'bg-purple-900/80 text-purple-200 border border-purple-700' : 'bg-blue-900/80 text-blue-200 border border-blue-700'
+                  }`}>
+                    {user?.role || 'ADMIN'}
+                  </span>
+                </div>
+              </div>
             </div>
-            <div className="text-xs truncate">
-              <div className="font-semibold text-slate-200 text-[11px] truncate">Final Year CSE Project</div>
-              <div className="text-slate-400 text-[10px]">Data Intelligence Platform</div>
-            </div>
+
+            <button
+              onClick={onLogout}
+              title="Sign Out"
+              className="p-1.5 rounded-md text-slate-400 hover:text-red-400 hover:bg-slate-800 transition-colors"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
           </div>
         </div>
       </aside>
@@ -154,10 +163,10 @@ const Layout = ({ activeTab, setActiveTab, children, filters, setFilters, filter
         <header className="bg-white border-b border-slate-200 px-6 py-4 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4 sticky top-0 z-20 shadow-xs">
           <div>
             <h2 className="text-xl font-bold text-slate-900 tracking-tight">
-              DATA PULSE — Business Intelligence
+              DATA PULSE — Executive Dashboard
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
-              End-to-end data pipeline, analytics, machine learning, and decision support platform.
+              Sales, customer analytics, data quality, and machine-learning decision support.
             </p>
           </div>
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Layout from './layouts/Layout';
+import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Sales from './pages/Sales';
 import Customers from './pages/Customers';
@@ -8,14 +9,13 @@ import Regions from './pages/Regions';
 import Forecast from './pages/Forecast';
 import SegmentationML from './pages/SegmentationML';
 import ChurnML from './pages/ChurnML';
-import DataUpload from './pages/DataUpload';
-import DataQuality from './pages/DataQuality';
-import DataLineage from './pages/DataLineage';
-import PipelineMonitor from './pages/PipelineMonitor';
+import DataManagement from './pages/DataManagement';
 import Reports from './pages/Reports';
-import { getFilterOptions } from './services/api';
+import { getFilterOptions, getAuthMe } from './services/api';
 
 function App() {
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem('datapulse_token'));
   const [activeTab, setActiveTab] = useState('dashboard');
   const [filterOptions, setFilterOptions] = useState(null);
   const [filters, setFilters] = useState({
@@ -23,6 +23,17 @@ function App() {
     category: 'All',
     product: 'All',
   });
+
+  useEffect(() => {
+    // Check saved authentication session
+    const checkAuth = async () => {
+      const savedUser = localStorage.getItem('datapulse_user');
+      if (savedUser && token) {
+        setUser(JSON.parse(savedUser));
+      }
+    };
+    checkAuth();
+  }, [token]);
 
   useEffect(() => {
     const fetchOptions = async () => {
@@ -36,6 +47,25 @@ function App() {
     fetchOptions();
   }, []);
 
+  const handleLoginSuccess = (userData, accessToken) => {
+    setUser(userData);
+    setToken(accessToken);
+    localStorage.setItem('datapulse_token', accessToken);
+    localStorage.setItem('datapulse_user', JSON.stringify(userData));
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    setToken(null);
+    localStorage.removeItem('datapulse_token');
+    localStorage.removeItem('datapulse_user');
+  };
+
+  // If user is not logged in, render Login page
+  if (!user || !token) {
+    return <Login onLoginSuccess={handleLoginSuccess} />;
+  }
+
   const renderActiveTab = () => {
     switch (activeTab) {
       case 'dashboard':
@@ -48,30 +78,25 @@ function App() {
         return <Products filters={filters} />;
       case 'regions':
         return <Regions filters={filters} />;
-      case 'data_quality':
-        return <DataQuality />;
-      case 'lineage':
-        return <DataLineage />;
-      case 'pipeline':
-        return <PipelineMonitor />;
+      case 'data_management':
+        return <DataManagement userRole={user.role} />;
       case 'forecast':
         return <Forecast filters={filters} />;
       case 'segmentation':
         return <SegmentationML filters={filters} />;
       case 'churn':
         return <ChurnML filters={filters} />;
-      case 'upload':
-        return <DataUpload />;
       case 'reports':
         return <Reports filters={filters} />;
       case 'settings':
         return (
           <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-xs max-w-2xl mx-auto space-y-4">
-            <h3 className="font-bold text-slate-900 text-base">DATAPULSE Platform Settings</h3>
+            <h3 className="font-bold text-slate-900 text-base">DATAPULSE System Settings</h3>
             <div className="text-xs text-slate-600 space-y-2">
-              <p>• <strong>API Endpoint Base URL</strong>: <code>http://localhost:8000/api</code></p>
+              <p>• <strong>API Endpoint Base URL</strong>: <code>https://businessiq.onrender.com/api</code></p>
+              <p>• <strong>Authentication Engine</strong>: JWT Bearer Security Tokens + PBKDF2 Password Hashing</p>
+              <p>• <strong>User Role Permissions</strong>: <code>{user.role}</code> ({user.name})</p>
               <p>• <strong>Database Engine</strong>: Relational MySQL / SQLite Normalized 3NF Schema</p>
-              <p>• <strong>Machine Learning Engine</strong>: Scikit-Learn (1.8.0), Pandas (3.0.5), NumPy (2.5.2)</p>
             </div>
           </div>
         );
@@ -87,6 +112,8 @@ function App() {
       filters={filters}
       setFilters={setFilters}
       filterOptions={filterOptions}
+      user={user}
+      onLogout={handleLogout}
     >
       {renderActiveTab()}
     </Layout>
