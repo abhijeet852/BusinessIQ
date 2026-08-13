@@ -135,8 +135,8 @@ const Dashboard = ({ filters, setActiveTab }) => {
     fetchData();
   }, [filters]);
 
-  // Skeleton Loader for initial fetch
-  if (loading && !data) {
+  // Skeleton Loader while loading or if data is not yet available
+  if (loading || !data) {
     return (
       <div className="space-y-6 animate-pulse">
         <div className="h-32 bg-slate-200 rounded-2xl"></div>
@@ -165,19 +165,20 @@ const Dashboard = ({ filters, setActiveTab }) => {
   }
 
   const {
-    kpis,
-    monthly_trend,
-    quarterly_trend,
-    sales_by_category,
-    sales_by_region,
-    top_products,
-    customer_insights,
-    business_highlights,
+    kpis = {},
+    monthly_trend = [],
+    quarterly_trend = [],
+    sales_by_category = [],
+    sales_by_region = [],
+    top_products = [],
+    customer_insights = {},
+    business_highlights = [],
   } = data || {};
 
-  const trendData = timeResolution === 'quarterly' ? quarterly_trend : monthly_trend;
-  const sortedRegions = sales_by_region ? [...sales_by_region].sort((a, b) => b.Sales - a.Sales) : [];
-  const topProductOpportunity = top_products && top_products.length > 0 ? top_products[0] : null;
+  const trendData = (timeResolution === 'quarterly' ? quarterly_trend : monthly_trend) || [];
+  const sortedRegions = Array.isArray(sales_by_region) ? [...sales_by_region].sort((a, b) => (b.Sales || 0) - (a.Sales || 0)) : [];
+  const topProductOpportunity = Array.isArray(top_products) && top_products.length > 0 ? top_products[0] : null;
+
 
   return (
     <div className="space-y-7 animate-fade-in">
