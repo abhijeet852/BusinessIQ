@@ -175,9 +175,20 @@ const Dashboard = ({ filters, setActiveTab }) => {
     business_highlights = [],
   } = data || {};
 
-  const trendData = (timeResolution === 'quarterly' ? quarterly_trend : monthly_trend) || [];
-  const sortedRegions = Array.isArray(sales_by_region) ? [...sales_by_region].sort((a, b) => (b.Sales || 0) - (a.Sales || 0)) : [];
-  const topProductOpportunity = Array.isArray(top_products) && top_products.length > 0 ? top_products[0] : null;
+  const trendData = Array.isArray(timeResolution === 'quarterly' ? quarterly_trend : monthly_trend)
+    ? (timeResolution === 'quarterly' ? quarterly_trend : monthly_trend)
+    : [];
+
+  const sortedRegions = Array.isArray(sales_by_region)
+    ? [...sales_by_region].sort((a, b) => (b.Sales || 0) - (a.Sales || 0))
+    : [];
+
+  const productList = Array.isArray(top_products) ? top_products : [];
+  const topProductOpportunity = productList.length > 0 ? productList[0] : null;
+
+  const highlightList = Array.isArray(business_highlights) ? business_highlights : [];
+  const alertList = Array.isArray(alerts) ? alerts : (alerts && Array.isArray(alerts.alerts) ? alerts.alerts : []);
+
 
 
   return (
@@ -362,7 +373,7 @@ const Dashboard = ({ filters, setActiveTab }) => {
           </div>
 
           <div className="space-y-3">
-            {business_highlights?.map((hl, idx) => (
+            {highlightList.map((hl, idx) => (
               <div key={idx} className="p-3.5 rounded-xl bg-slate-50 border border-slate-100 text-xs flex items-start gap-3">
                 <span className="w-2 h-2 rounded-full bg-blue-600 mt-1.5 flex-shrink-0"></span>
                 <span className="text-slate-700 font-medium leading-relaxed">{hl}</span>
@@ -379,7 +390,7 @@ const Dashboard = ({ filters, setActiveTab }) => {
           </div>
 
           <div className="space-y-3">
-            {alerts?.map((al, idx) => (
+            {alertList.map((al, idx) => (
               <div key={idx} className="p-3.5 rounded-xl bg-amber-50/60 border border-amber-200/80 text-xs space-y-1">
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-amber-900 uppercase text-[10px] tracking-wider">{al.title}</span>
@@ -389,6 +400,7 @@ const Dashboard = ({ filters, setActiveTab }) => {
               </div>
             ))}
           </div>
+
         </div>
       </div>
 
