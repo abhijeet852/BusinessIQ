@@ -543,7 +543,99 @@ def api_ml_forecast(
 
 
 # -----------------------------------------------------------------------------
-# 10. DATA UPLOAD & VALIDATION ENDPOINTS
+# 10. DATAPULSE ETL & PIPELINE MONITORING ENDPOINTS
+# -----------------------------------------------------------------------------
+from src.modules.etl_pipeline import ETLPipeline
+from src.modules.pipeline_monitor import get_data_lineage, get_pipeline_status
+from src.modules.analytics import calculate_business_health_score, generate_business_alerts, get_profitability_matrix
+from src.modules.churn_prediction import compare_churn_models, get_customer_360_view
+
+
+@app.get("/api/etl/pipeline-status")
+def api_pipeline_status():
+    """Pipeline Status monitoring endpoint."""
+    return get_pipeline_status()
+
+
+@app.get("/api/etl/lineage")
+def api_data_lineage(filename: str = "sales.csv"):
+    """Data Lineage topology graph and processing metadata endpoint."""
+    return get_data_lineage(filename=filename)
+
+
+@app.post("/api/etl/upload-run")
+async def api_etl_upload_run(file: UploadFile = File(...)):
+    """Runs 5-stage ETL Pipeline (Extract, Validate, Clean, Transform, Load) on uploaded file."""
+    contents = await file.read()
+    filename = file.filename
+
+    pipeline = ETLPipeline()
+    res = pipeline.run_full_etl(contents, filename=filename)
+
+    if not res.get("success"):
+        raise HTTPException(status_code=400, detail=res.get("error", "ETL Pipeline execution failed."))
+
+    return res
+
+
+@app.get("/api/business-health")
+def api_business_health(
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    region: Optional[str] = None,
+    category: Optional[str] = None,
+):
+    """Transparent Business Health Score endpoint (0-100)."""
+    df = get_base_df()
+    f_df = filter_df(df, start_date, end_date, region, category)
+    return calculate_business_health_score(f_df)
+
+
+@app.get("/api/business-alerts")
+def api_business_alerts(
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    region: Optional[str] = None,
+    category: Optional[str] = None,
+):
+    """Automated Business Anomaly & Opportunity Alerts endpoint."""
+    df = get_base_df()
+    f_df = filter_df(df, start_date, end_date, region, category)
+    return {"alerts": generate_business_alerts(f_df)}
+
+
+@app.get("/api/profitability-matrix")
+def api_profitability_matrix(
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    region: Optional[str] = None,
+    category: Optional[str] = None,
+):
+    """2x2 Profitability Matrix endpoint (Revenue vs Profit Margin)."""
+    df = get_base_df()
+    f_df = filter_df(df, start_date, end_date, region, category)
+    return get_profitability_matrix(f_df)
+
+
+@app.get("/api/ml/churn-comparison")
+def api_churn_model_comparison(recency_threshold: int = Query(90, ge=30, le=180)):
+    """ML Model Comparison endpoint (Logistic Regression vs Random Forest)."""
+    df = get_base_df()
+    return compare_churn_models(df, recency_threshold_days=recency_threshold)
+
+
+@app.get("/api/customer-360/{customer_id}")
+def api_customer_360(customer_id: str):
+    """Customer 360 profile, feature explainability & recommendation endpoint."""
+    df = get_base_df()
+    profile = get_customer_360_view(customer_id, df)
+    if not profile:
+        raise HTTPException(status_code=404, detail=f"Customer ID '{customer_id}' not found.")
+    return profile
+
+
+# -----------------------------------------------------------------------------
+# 11. DATA UPLOAD & VALIDATION ENDPOINTS
 # -----------------------------------------------------------------------------
 @app.post("/api/upload")
 async def api_upload_file(file: UploadFile = File(...)):
@@ -598,7 +690,7 @@ async def api_upload_file(file: UploadFile = File(...)):
 
 
 # -----------------------------------------------------------------------------
-# 11. REPORTS CSV EXPORT ENDPOINT
+# 12. REPORTS CSV EXPORT ENDPOINT
 # -----------------------------------------------------------------------------
 @app.get("/api/reports/export")
 def api_export_report(
@@ -615,7 +707,7 @@ def api_export_report(
     f_df.to_csv(csv_buffer, index=False)
     csv_buffer.seek(0)
 
-    filename = f"BusinessIQ_Report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+    filename = f"DataPulse_Report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
 
     return StreamingResponse(
         io.BytesIO(csv_buffer.getvalue().encode()),
@@ -627,3 +719,4 @@ def api_export_report(
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("backend.main:app", host="0.0.0.0", port=8000, reload=True)
+

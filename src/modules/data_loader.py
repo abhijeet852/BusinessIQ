@@ -146,3 +146,45 @@ def load_sales_data(filepath: str = "data/sales.csv") -> Tuple[pd.DataFrame, Dic
     """
     loader = DataLoader(filepath=filepath)
     return loader.load_and_preprocess()
+
+
+def validate_sales_schema(df: pd.DataFrame) -> dict:
+    """Validates presence of REQUIRED_COLUMNS."""
+    missing_cols = [c for c in REQUIRED_COLUMNS if c not in df.columns]
+    return {"is_valid": len(missing_cols) == 0, "missing_cols": missing_cols}
+
+
+def preprocess_sales_data(df: pd.DataFrame) -> pd.DataFrame:
+    """Preprocesses and cleans a sales DataFrame in-memory."""
+    if df.empty:
+        return pd.DataFrame(columns=REQUIRED_COLUMNS)
+
+    clean_df = df.copy()
+
+    # Drop exact duplicate rows
+    clean_df = clean_df.drop_duplicates().reset_index(drop=True)
+
+    if "Customer_Name" in clean_df.columns:
+        clean_df["Customer_Name"] = clean_df["Customer_Name"].fillna("Unknown Customer")
+
+    if "Discount" in clean_df.columns:
+        clean_df["Discount"] = pd.to_numeric(clean_df["Discount"], errors="coerce").fillna(0.0)
+
+    for col in ["Quantity", "Sales", "Profit"]:
+        if col in clean_df.columns:
+            clean_df[col] = pd.to_numeric(clean_df[col], errors="coerce")
+
+    if "Sales" in clean_df.columns:
+        clean_df["Sales"] = clean_df["Sales"].fillna(clean_df["Sales"].median())
+    if "Profit" in clean_df.columns:
+        clean_df["Profit"] = clean_df["Profit"].fillna(clean_df["Profit"].median())
+    if "Quantity" in clean_df.columns:
+        clean_df["Quantity"] = clean_df["Quantity"].fillna(1).astype(int)
+
+    if "Order_Date" in clean_df.columns:
+        clean_df["Order_Date"] = pd.to_datetime(clean_df["Order_Date"], errors="coerce")
+        clean_df = clean_df.dropna(subset=["Order_Date"])
+        clean_df = clean_df.sort_values("Order_Date").reset_index(drop=True)
+
+    return clean_df
+

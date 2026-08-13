@@ -198,3 +198,185 @@ def get_top_customers(df: pd.DataFrame, n: int = 10) -> pd.DataFrame:
         .sort_values(by="Total_Sales", ascending=False)
     )
     return cust_df.head(n).reset_index(drop=True)
+
+
+def calculate_business_health_score(df: pd.DataFrame) -> dict:
+    """Calculates a transparent Business Health Score (0-100) combining 4 weighted components:
+    1. Revenue Growth (30% weight)
+    2. Profitability Margin (30% weight)
+    3. Customer Retention Rate (20% weight)
+    4. Catalog Profitability Consistency (20% weight)
+    """
+    if df.empty:
+        return {"health_score": 0, "status": "Critical", "components": {}}
+
+    total_sales = get_total_sales(df)
+    total_profit = get_total_profit(df)
+
+    # 1. Profitability Score (Margin %)
+    profit_margin = (total_profit / total_sales * 100) if total_sales > 0 else 0
+    prof_score = min(100, max(0, int(profit_margin * 3.5)))
+
+    # 2. Revenue Growth Score
+    monthly_df = get_sales_by_month(df)
+    if len(monthly_df) >= 2:
+        last_m = monthly_df.iloc[-1]["Sales"]
+        prev_m = monthly_df.iloc[-2]["Sales"]
+        growth_pct = ((last_m - prev_m) / prev_m * 100) if prev_m > 0 else 0
+        rev_score = min(100, max(0, int(75 + growth_pct * 1.2)))
+    else:
+        rev_score = 80
+
+    # 3. Customer Retention Score
+    cust_df = df.groupby("Customer_ID")["Order_ID"].nunique()
+    repeat_pct = (cust_df > 1).mean() * 100 if len(cust_df) > 0 else 0
+    retention_score = min(100, max(0, int(repeat_pct)))
+
+    # 4. Catalog Profitability Consistency
+    prod_df = get_sales_by_product(df)
+    if not prod_df.empty:
+        profitable_prods = (prod_df["Profit"] > 0).mean() * 100
+        catalog_score = min(100, max(0, int(profitable_prods)))
+    else:
+        catalog_score = 80
+
+    # Weighted Overall Score
+    health_score = int(round(
+        (rev_score * 0.30) + (prof_score * 0.30) + (retention_score * 0.20) + (catalog_score * 0.20)
+    ))
+
+    if health_score >= 80:
+        status = "Healthy"
+    elif health_score >= 60:
+        status = "Moderate"
+    else:
+        status = "At Risk"
+
+    return {
+        "health_score": health_score,
+        "status": status,
+        "components": {
+            "revenue_growth": {"score": rev_score, "weight": "30%", "label": "Revenue Trend"},
+            "profitability": {"score": prof_score, "weight": "30%", "label": f"Profit Margin ({round(profit_margin, 1)}%)"},
+            "retention": {"score": retention_score, "weight": "20%", "label": f"Repeat Customer Rate ({round(repeat_pct, 1)}%)"},
+            "catalog_consistency": {"score": catalog_score, "weight": "20%", "label": "Catalog Margin Consistency"},
+        },
+        "formula_documentation": "Health Score = (Revenue Growth × 0.30) + (Profit Margin × 0.30) + (Customer Retention × 0.20) + (Catalog Consistency × 0.20)",
+    }
+
+
+def generate_business_alerts(df: pd.DataFrame) -> list:
+    """Generates automated business anomaly alerts (Sales decline, Churn risk, Growth opportunities)."""
+    if df.empty:
+        return []
+
+    alerts = []
+
+    # 1. High Churn Risk Alert
+    max_date = df["Order_Date"].max()
+    cust_last = df.groupby(["Customer_ID", "Customer_Name"])["Order_Date"].max().reset_index()
+    cust_last["Recency_Days"] = (max_date - cust_last["Order_Date"]).dt.days
+    high_churn = cust_last[cust_last["Recency_Days"] > 90]
+
+    if len(high_churn) > 0:
+        names = ", ".join(high_churn["Customer_Name"].head(2).tolist())
+        alerts.append({
+            "type": "warning",
+            "category": "Churn Risk",
+            "title": "Customer Inactivity Alert",
+            "message": f"{len(high_churn)} customer account{'s' if len(high_churn)>1 else ''} ({names}) inactive > 90 days.",
+        })
+
+    # 2. Low Profit Margin Alert
+    cat_df = get_sales_by_category(df)
+    low_margin = cat_df[cat_df["Profit_Margin_%"] < 20]
+    if not low_margin.empty:
+        low_cat = low_margin.iloc[0]
+        alerts.append({
+            "type": "warning",
+            "category": "Profitability",
+            "title": "Low Category Margin",
+            "message": f"{low_cat['Category']} margin is {low_cat['Profit_Margin_%']}%, below the 20% benchmark.",
+        })
+
+    # 3. Regional Growth Opportunity
+    reg_df = get_sales_by_region(df)
+    if not reg_df.empty:
+        top_reg = reg_df.iloc[0]
+        alerts.append({
+            "type": "success",
+            "category": "Growth Opportunity",
+            "title": "Strong Territory Performance",
+            "message": f"{top_reg['Region']} territory is performing strongly with {top_reg['Sales_Share_%']}% revenue share.",
+        })
+
+    # 4. Top Product Highlight
+    prod_df = get_sales_by_product(df, top_n=1)
+    if not prod_df.empty:
+        top_p = prod_df.iloc[0]
+        alerts.append({
+            "type": "info",
+            "category": "Catalog Leader",
+            "title": "Top Selling Item",
+            "message": f"{top_p['Product']} generated highest unit sales across catalog.",
+        })
+
+    return alerts
+
+
+def get_profitability_matrix(df: pd.DataFrame) -> dict:
+    """Categorizes products into a 2x2 Profitability Matrix:
+    1. High Revenue / High Margin (Stars)
+    2. High Revenue / Low Margin (Volume Drivers)
+    3. Low Revenue / High Margin (Niche Growth)
+    4. Low Revenue / Low Margin (Underperformers)
+    """
+    if df.empty or "Product" not in df.columns:
+        return {"stars": [], "volume_drivers": [], "niche_growth": [], "underperformers": []}
+
+    prod_df = df.groupby("Product").agg(
+        Sales=("Sales", "sum"),
+        Profit=("Profit", "sum"),
+        Quantity=("Quantity", "sum")
+    ).reset_index()
+
+    prod_df["Margin_%"] = np.where(
+        prod_df["Sales"] > 0, np.round((prod_df["Profit"] / prod_df["Sales"]) * 100, 1), 0.0
+    )
+
+    rev_median = prod_df["Sales"].median()
+    margin_median = prod_df["Margin_%"].median()
+
+    stars = []
+    volume_drivers = []
+    niche_growth = []
+    underperformers = []
+
+    for _, row in prod_df.iterrows():
+        p_info = {
+            "Product": row["Product"],
+            "Sales": float(row["Sales"]),
+            "Profit": float(row["Profit"]),
+            "Margin_%": float(row["Margin_%"]),
+            "Quantity": int(row["Quantity"]),
+        }
+        if row["Sales"] >= rev_median and row["Margin_%"] >= margin_median:
+            stars.append(p_info)
+        elif row["Sales"] >= rev_median and row["Margin_%"] < margin_median:
+            volume_drivers.append(p_info)
+        elif row["Sales"] < rev_median and row["Margin_%"] >= margin_median:
+            niche_growth.append(p_info)
+        else:
+            underperformers.append(p_info)
+
+    return {
+        "revenue_threshold": float(rev_median),
+        "margin_threshold": float(margin_median),
+        "quadrants": {
+            "stars": stars,
+            "volume_drivers": volume_drivers,
+            "niche_growth": niche_growth,
+            "underperformers": underperformers,
+        }
+    }
+

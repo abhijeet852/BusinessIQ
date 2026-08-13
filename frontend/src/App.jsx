@@ -9,6 +9,9 @@ import Forecast from './pages/Forecast';
 import SegmentationML from './pages/SegmentationML';
 import ChurnML from './pages/ChurnML';
 import DataUpload from './pages/DataUpload';
+import DataQuality from './pages/DataQuality';
+import DataLineage from './pages/DataLineage';
+import PipelineMonitor from './pages/PipelineMonitor';
 import Reports from './pages/Reports';
 import { getFilterOptions } from './services/api';
 
@@ -45,6 +48,12 @@ function App() {
         return <Products filters={filters} />;
       case 'regions':
         return <Regions filters={filters} />;
+      case 'data_quality':
+        return <DataQuality />;
+      case 'lineage':
+        return <DataLineage />;
+      case 'pipeline':
+        return <PipelineMonitor />;
       case 'forecast':
         return <Forecast filters={filters} />;
       case 'segmentation':
@@ -58,16 +67,16 @@ function App() {
       case 'settings':
         return (
           <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-xs max-w-2xl mx-auto space-y-4">
-            <h3 className="font-bold text-slate-900 text-base">Platform Settings</h3>
+            <h3 className="font-bold text-slate-900 text-base">DATAPULSE Platform Settings</h3>
             <div className="text-xs text-slate-600 space-y-2">
               <p>• <strong>API Endpoint Base URL</strong>: <code>http://localhost:8000/api</code></p>
               <p>• <strong>Database Engine</strong>: Relational MySQL / SQLite Normalized 3NF Schema</p>
-              <p>• <strong>Machine Learning Libraries</strong>: Scikit-Learn (1.8.0), Pandas (3.0.2), NumPy (2.4.4)</p>
+              <p>• <strong>Machine Learning Engine</strong>: Scikit-Learn (1.8.0), Pandas (3.0.5), NumPy (2.5.2)</p>
             </div>
           </div>
         );
       default:
-        return <Dashboard filters={filters} />;
+        return <Dashboard filters={filters} setActiveTab={setActiveTab} />;
     }
   };
 

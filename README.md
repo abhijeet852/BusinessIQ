@@ -1,14 +1,34 @@
-# BusinessIQ: Business Analytics & Customer Insights Platform
+# DATAPULSE — Business Data Intelligence & Prediction Platform
 
-An impressive, full-stack B.Tech Computer Science & Engineering (CSE) final-year portfolio project demonstrating production-grade software engineering, relational database design, data analytics, and machine learning.
+An impressive, full-stack B.Tech Computer Science & Engineering (CSE) final-year portfolio project demonstrating data engineering pipelines, data quality scoring, relational 3NF database architecture, business intelligence analytics, machine learning, and explainable decision support.
 
 ---
 
 ## 📌 Project Overview
 
-**BusinessIQ** is an interactive, 3-tier Business Analytics and Customer Insights Platform engineered with **React 18**, **Tailwind CSS**, **FastAPI**, **MySQL / SQLite**, **Pandas**, and **Scikit-Learn**.
+**DataPulse** transforms raw business transaction data through a structured 5-stage ETL pipeline into actionable business intelligence and machine learning predictions:
 
-The system enables business leaders to analyze historical sales metrics, evaluate product performance, track customer accounts, predict customer churn risks, perform ML customer segmentation, and forecast future revenue trends.
+```text
+RAW DATA (CSV / Excel)
+    │
+    ▼
+DATA INGESTION (Extract Engine)
+    │
+    ▼
+DATA VALIDATION & QUALITY ENGINE (Quality Score 0-100)
+    │
+    ▼
+DATA CLEANING & TRANSFORMATION (Deduplication, Imputation, Parsing)
+    │
+    ▼
+RELATIONAL DATABASE ENGINE (3NF Normalized Schema + Lineage Metadata)
+    │
+    ▼
+ANALYTICS & ML PREDICTION ENGINE (K-Means, Model Comparison, Forecasting)
+    │
+    ▼
+EXPLAINABLE INSIGHTS & BUSINESS DECISION SUPPORT (Health Score & Recommendations)
+```
 
 ---
 
@@ -17,28 +37,41 @@ The system enables business leaders to analyze historical sales metrics, evaluat
 | Layer | Technology | Purpose |
 | :--- | :--- | :--- |
 | **Frontend Framework** | React 18 (Vite SPA) | Single Page Application frontend |
-| **Styling** | Tailwind CSS | Clean, modern light-themed design system |
-| **Data Visualization** | Recharts (SVG) | Interactive charts (Line trends, Bar charts, Donut charts) |
+| **Styling** | Tailwind CSS | Clean light-themed design system |
+| **Data Visualization** | Recharts (SVG) | Interactive trend lines, bar charts, and DAG topology |
 | **Backend Framework** | FastAPI (Python) | High-performance asynchronous REST API server |
 | **Relational Database** | MySQL & SQLite | 3NF normalized schema (`customers`, `products`, `orders`) |
-| **Data Engineering** | Pandas & NumPy | Ingestion pipeline, missing value imputation & aggregations |
-| **Machine Learning** | Scikit-Learn (1.8.0) | K-Means Clustering, Logistic Regression, Linear Trend Regression |
-| **Testing** | `unittest` | Automated unit testing suite (`28/28 tests passing`) |
+| **Data Engineering** | Pandas & NumPy | 5-stage ETL pipeline, Quality Engine (0-100), and aggregations |
+| **Machine Learning** | Scikit-Learn (1.8.0) | K-Means, Logistic Regression, Random Forest, Linear Trend |
+| **Testing** | `unittest` | Automated unit testing suite (`36/36 tests passing`) |
 
 ---
 
 ## 🚀 Key Features
 
-1. 📊 **Executive Dashboard**: High-level KPI summary cards (Revenue, Profit, Orders, Customers), period-over-period trend badges, Monthly Revenue line chart, Sales by Category bar chart, Sales by Region donut chart, and Top Products summary table.
-2. 💰 **Sales Analytics**: Detailed sales transactions table with pagination, category performance, regional breakdown, and multi-dimensional date/category/region filtering.
-3. 👥 **Customer Analytics**: Customer account rankings, total spending, order frequency, and customer metrics.
-4. 📦 **Product Analytics**: Product catalog performance table, revenue, units sold, net profit, and profit margins.
-5. 🌐 **Regional Analysis**: Regional sales and profit comparison charts and market share distribution table.
-6. 🤖 **Customer Behavioral Segmentation (K-Means ML)**: Unsupervised $K$-Means clustering ($K=3$) using normalized RFM features (Total Spending, Order Count, AOV, Recency Days).
-7. 🔮 **Customer Churn Risk Prediction (Logistic Regression ML)**: Supervised classification model estimating churn probabilities $P(\text{Churn})$, risk levels (Low, Medium, High), and model evaluation metrics (Accuracy, Precision, Recall, F1-Score, Confusion Matrix).
-8. 📈 **Sales Forecasting (Linear Trend ML)**: Time-series revenue forecasting ($y = m \cdot t + c$) for $3$, $6$, or $12$ months ahead with in-sample MAE, RMSE, and $R^2$ accuracy evaluation.
-9. 📁 **Data Upload & Validation**: CSV and Excel dataset upload dropzone with row/column audit, schema validation, missing value count, and import confirmation.
-10. 📄 **Reports Exporter**: Downloadable CSV report generator reflecting active UI filter selections.
+1. ⚡ **5-Stage Modular ETL Pipeline**:
+   - `Extract`: Native CSV and Excel ingestion.
+   - `Validate`: Schema column & type verification.
+   - `Clean`: Deduplication, ISO date parsing, and missing cell imputation.
+   - `Transform`: Profit margin calculation & feature engineering.
+   - `Load`: Relational 3NF SQL migration.
+2. 🏆 **Data Quality Engine (0–100 Score)**:
+   - Transparent Data Quality Score formula evaluating missing cells %, duplicate rows, invalid dates, and numeric outliers.
+   - Transformation audit log detailing every data cleansing operation applied.
+3. 🌿 **Data Lineage Topology**:
+   - Visual DAG graph tracking data flow from raw files to database storage and ML predictions.
+4. 🩺 **Pipeline Status Monitor**:
+   - Real-time stage health monitor tracking stage statuses (`Completed`, `Running`, `Failed`, `Warning`), processed record counts, and latency in milliseconds.
+5. 📊 **Executive Data Pulse Dashboard**:
+   - Transparent **Business Health Score (0–100)** formula combining Revenue Growth (30%), Profitability (30%), Customer Retention (20%), and Catalog Consistency (20%).
+   - Dynamic **Business Alerts** (sales decline warnings, churn risk alerts, growth opportunities).
+   - $2 \times 2$ **Profitability Matrix** (Stars, Volume Drivers, Niche Growth, Underperformers).
+6. 🤖 **ML Model Comparison & SHAP-style Explainability**:
+   - Side-by-side model comparison table (**Logistic Regression** vs **Random Forest Classifier**) using Accuracy, Precision, Recall, and F1-Score.
+   - Feature contribution explainability breakdown ("Why did the model predict 78% churn probability?").
+7. 👥 **Customer 360 & Actionable Business Recommendations**:
+   - Interactive Customer 360 profile combining transactions, segment, churn risk score, and purchase history.
+   - Rule-based business recommendation engine suggesting specific retention and cross-selling campaigns.
 
 ---
 
@@ -48,7 +81,7 @@ The system enables business leaders to analyze historical sales metrics, evaluat
 - Python 3.9+ installed
 - Node.js v18+ and npm installed
 
-### Step 1: Clone Repository & Install Python Backend Dependencies
+### Step 1: Install Python Dependencies
 ```powershell
 cd d:\BusinessAnalyticsPlatform
 pip install -r requirements.txt
@@ -73,4 +106,4 @@ npm install
 npm run dev
 ```
 
-Open your browser at **`http://localhost:3000`** to view and interact with **BusinessIQ**!
+Open your browser at **`http://localhost:3000`** to interact with **DataPulse**!

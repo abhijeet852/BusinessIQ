@@ -25,6 +25,21 @@ export const getDashboardData = async (filters = {}) => {
   return res.data;
 };
 
+export const getBusinessHealth = async (filters = {}) => {
+  const res = await api.get('/business-health', { params: filters });
+  return res.data;
+};
+
+export const getBusinessAlerts = async (filters = {}) => {
+  const res = await api.get('/business-alerts', { params: filters });
+  return res.data;
+};
+
+export const getProfitabilityMatrix = async (filters = {}) => {
+  const res = await api.get('/profitability-matrix', { params: filters });
+  return res.data;
+};
+
 export const getSalesData = async (filters = {}, page = 1, limit = 15) => {
   const res = await api.get('/sales', { params: { ...filters, page, limit } });
   return res.data;
@@ -32,6 +47,11 @@ export const getSalesData = async (filters = {}, page = 1, limit = 15) => {
 
 export const getCustomersData = async (filters = {}) => {
   const res = await api.get('/customers', { params: filters });
+  return res.data;
+};
+
+export const getCustomer360 = async (customerId) => {
+  const res = await api.get(`/customer-360/${customerId}`);
   return res.data;
 };
 
@@ -45,6 +65,25 @@ export const getRegionsData = async (filters = {}) => {
   return res.data;
 };
 
+export const getPipelineStatus = async () => {
+  const res = await api.get('/etl/pipeline-status');
+  return res.data;
+};
+
+export const getDataLineage = async (filename = 'sales.csv') => {
+  const res = await api.get('/etl/lineage', { params: { filename } });
+  return res.data;
+};
+
+export const uploadEtlRun = async (file) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  const res = await api.post('/etl/upload-run', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+  return res.data;
+};
+
 export const getSegmentationML = async (nClusters = 3, filters = {}) => {
   const res = await api.get('/ml/segmentation', { params: { n_clusters: nClusters, ...filters } });
   return res.data;
@@ -52,6 +91,11 @@ export const getSegmentationML = async (nClusters = 3, filters = {}) => {
 
 export const getChurnPredictionML = async (recencyThreshold = 90, filters = {}) => {
   const res = await api.get('/ml/churn', { params: { recency_threshold: recencyThreshold, ...filters } });
+  return res.data;
+};
+
+export const getChurnModelComparison = async (recencyThreshold = 90) => {
+  const res = await api.get('/ml/churn-comparison', { params: { recency_threshold: recencyThreshold } });
   return res.data;
 };
 

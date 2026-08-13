@@ -14,24 +14,37 @@ import {
   User,
   Menu,
   X,
-  Database,
+  Activity,
+  CheckCircle2,
+  GitCommit,
+  Award,
   Filter,
   Calendar,
+  Zap,
 } from 'lucide-react';
 
 const Layout = ({ activeTab, setActiveTab, children, filters, setFilters, filterOptions }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  // Grouped Navigation Structure
+  // Grouped Navigation Structure for DataPulse
   const menuGroups = [
     {
-      title: 'BUSINESS',
+      title: 'MAIN',
       items: [
         { id: 'dashboard', name: 'Dashboard', icon: LayoutDashboard },
         { id: 'sales', name: 'Sales Analytics', icon: TrendingUp },
         { id: 'customers', name: 'Customer Analytics', icon: Users },
         { id: 'products', name: 'Product Analytics', icon: Package },
         { id: 'regions', name: 'Regional Analysis', icon: Globe },
+      ],
+    },
+    {
+      title: 'DATA',
+      items: [
+        { id: 'upload', name: 'Data Upload', icon: UploadCloud },
+        { id: 'data_quality', name: 'Data Quality Report', icon: Award },
+        { id: 'lineage', name: 'Data Lineage', icon: GitCommit },
+        { id: 'pipeline', name: 'Pipeline Monitor', icon: Activity },
       ],
     },
     {
@@ -43,11 +56,8 @@ const Layout = ({ activeTab, setActiveTab, children, filters, setFilters, filter
       ],
     },
     {
-      title: 'TOOLS',
-      items: [
-        { id: 'upload', name: 'Data Upload', icon: UploadCloud },
-        { id: 'reports', name: 'Reports', icon: FileSpreadsheet },
-      ],
+      title: 'REPORTING',
+      items: [{ id: 'reports', name: 'Reports', icon: FileSpreadsheet }],
     },
     {
       title: 'SYSTEM',
@@ -57,13 +67,13 @@ const Layout = ({ activeTab, setActiveTab, children, filters, setFilters, filter
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row font-sans">
-      {/* Mobile Top Header */}
+      {/* Mobile Header */}
       <div className="md:hidden bg-slate-900 text-white flex items-center justify-between p-4 border-b border-slate-800">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white">
-            <Database className="w-4 h-4" />
+          <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold">
+            <Zap className="w-4 h-4" />
           </div>
-          <span className="font-bold text-base tracking-tight">BusinessIQ</span>
+          <span className="font-bold text-base tracking-tight">DATAPULSE</span>
         </div>
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -73,26 +83,26 @@ const Layout = ({ activeTab, setActiveTab, children, filters, setFilters, filter
         </button>
       </div>
 
-      {/* Dark Navy Grouped Sidebar Container */}
+      {/* Dark Navy Grouped Sidebar */}
       <aside
         className={`${
           sidebarOpen ? 'block' : 'hidden'
-        } md:block w-full md:w-64 bg-slate-900 text-slate-300 flex-shrink-0 flex flex-col justify-between border-r border-slate-800 transition-all duration-200 z-30`}
+        } md:block w-full md:w-64 bg-slate-900 text-slate-300 flex-shrink-0 flex flex-col justify-between border-r border-slate-800 z-30`}
       >
         <div className="overflow-y-auto">
           {/* Logo & Platform Title */}
           <div className="hidden md:flex items-center gap-3 px-5 py-5 border-b border-slate-800/80">
-            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white shadow-xs">
-              <Database className="w-4 h-4" />
+            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white shadow-xs font-extrabold">
+              <Zap className="w-4 h-4" />
             </div>
             <div>
-              <h1 className="font-bold text-white text-base tracking-tight leading-none">BusinessIQ</h1>
-              <p className="text-[11px] text-slate-400 mt-1 font-medium">Analytics & Insights Platform</p>
+              <h1 className="font-bold text-white text-base tracking-tight leading-none">DATAPULSE</h1>
+              <p className="text-[10px] text-slate-400 mt-1 font-medium">Data Intelligence & Prediction</p>
             </div>
           </div>
 
           {/* Grouped Navigation */}
-          <nav className="px-3 py-4 space-y-5">
+          <nav className="px-3 py-4 space-y-4">
             {menuGroups.map((group) => (
               <div key={group.title} className="space-y-1">
                 <div className="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
@@ -110,7 +120,7 @@ const Layout = ({ activeTab, setActiveTab, children, filters, setFilters, filter
                       }}
                       className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-xs font-medium transition-all ${
                         isActive
-                          ? 'bg-blue-600/90 text-white font-semibold shadow-xs border border-blue-500/30'
+                          ? 'bg-blue-600 text-white font-semibold shadow-xs border border-blue-500/30'
                           : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/60'
                       }`}
                     >
@@ -124,7 +134,7 @@ const Layout = ({ activeTab, setActiveTab, children, filters, setFilters, filter
           </nav>
         </div>
 
-        {/* Small & Clean Student Profile Footer */}
+        {/* Student Profile Footer */}
         <div className="p-3 border-t border-slate-800/80">
           <div className="flex items-center gap-2.5 px-3 py-2 bg-slate-800/40 rounded-lg border border-slate-800">
             <div className="w-7 h-7 rounded-full bg-slate-700/80 flex items-center justify-center text-slate-300 font-semibold text-xs border border-slate-600/60">
@@ -132,22 +142,22 @@ const Layout = ({ activeTab, setActiveTab, children, filters, setFilters, filter
             </div>
             <div className="text-xs truncate">
               <div className="font-semibold text-slate-200 text-[11px] truncate">Final Year CSE Project</div>
-              <div className="text-slate-400 text-[10px]">B.Tech Portfolio</div>
+              <div className="text-slate-400 text-[10px]">Data Intelligence Platform</div>
             </div>
           </div>
         </div>
       </aside>
 
-      {/* Main Content Body */}
+      {/* Main Workspace Body */}
       <main className="flex-1 flex flex-col min-w-0 bg-slate-50">
-        {/* Unified Dashboard Header & Dynamic Filter Toolbar */}
+        {/* Header Bar */}
         <header className="bg-white border-b border-slate-200 px-6 py-4 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4 sticky top-0 z-20 shadow-xs">
           <div>
             <h2 className="text-xl font-bold text-slate-900 tracking-tight">
-              Business Analytics Dashboard
+              DATA PULSE — Business Intelligence
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
-              Sales and customer insights from historical business data.
+              End-to-end data pipeline, analytics, machine learning, and decision support platform.
             </p>
           </div>
 
@@ -218,7 +228,6 @@ const Layout = ({ activeTab, setActiveTab, children, filters, setFilters, filter
           )}
         </header>
 
-        {/* Main Workspace Body */}
         <div className="p-6 flex-1 overflow-auto">{children}</div>
       </main>
     </div>
