@@ -15,10 +15,9 @@ class ErrorBoundary extends Component {
 
   componentDidCatch(error, errorInfo) {
     console.error('DataPulse ErrorBoundary caught an exception:', error, errorInfo);
-    // Auto clear broken session tokens
     try {
-      localStorage.removeItem('datapulse_token');
-      localStorage.removeItem('datapulse_user');
+      localStorage.clear();
+      sessionStorage.clear();
     } catch (e) {}
   }
 
@@ -27,7 +26,7 @@ class ErrorBoundary extends Component {
       localStorage.clear();
       sessionStorage.clear();
     } catch (e) {}
-    window.location.href = window.location.origin + window.location.pathname;
+    window.location.href = window.location.origin + '/?v=' + Date.now();
   };
 
   render() {
@@ -40,17 +39,22 @@ class ErrorBoundary extends Component {
             </div>
             
             <div className="space-y-1.5">
-              <h2 className="text-xl font-black text-white tracking-tight">DATAPULSE Session Reset</h2>
+              <h2 className="text-xl font-black text-white tracking-tight">DATAPULSE Workspace</h2>
               <p className="text-xs text-slate-300 font-medium leading-relaxed">
-                Click below to clear temporary browser session cache and enter DataPulse.
+                Click below to load fresh DataPulse workspace.
               </p>
+              {this.state.error && (
+                <div className="p-2.5 bg-red-950/60 border border-red-800 text-red-300 rounded-lg text-[11px] font-mono text-left overflow-auto max-h-24">
+                  {this.state.error.toString()}
+                </div>
+              )}
             </div>
 
             <button
               onClick={this.handleReset}
               className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold text-xs rounded-xl shadow-lg shadow-blue-600/20 transition-all flex items-center justify-center gap-2"
             >
-              <span>Reset Session & Open DataPulse</span>
+              <span>Load DataPulse Workspace</span>
             </button>
           </div>
         </div>
