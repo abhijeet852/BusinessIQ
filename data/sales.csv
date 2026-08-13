@@ -1,0 +1,121 @@
+Order_ID,Order_Date,Customer_ID,Customer_Name,Product,Category,Region,Quantity,Sales,Discount,Profit
+ORD-2025001,2025-04-13,CUST-1004,Apex Financial Services (Sneha Gupta),Wireless Noise-Canceling Headphones,Technology,West,5,57000.0,0.05,17640.0
+ORD-2025002,2026-04-12,CUST-1007,Horizon Research Labs (Siddharth Nair),Gel Pens Assorted (Pack 24),Office Supplies,West,5,3612.5,0.15,1678.75
+ORD-2025003,2025-05-11,CUST-1006,Vanguard Health India (Ananya Reddy),Monitor 27-inch 4K,Technology,West,6,136800.0,0.05,36864.0
+ORD-2025004,2025-07-11,CUST-1005,Nexus Media Group (Vikram Singh),Mechanical Keyboard RGB,Technology,South,6,31200.0,0.2,9360.0
+ORD-2025005,2026-04-20,CUST-1010,Quantum Dynamics (Deepak Mehta),Gel Pens Assorted (Pack 24),Office Supplies,West,7,5057.5,0.15,2350.25
+ORD-2025006,2026-05-20,CUST-1003,Global Logistics India (Amit Patel),Wireless Noise-Canceling Headphones,Technology,East,5,60000.0,0.0,19200.0
+ORD-2025007,2025-06-16,CUST-1002,TechStart Solutions (Priya Sharma),Mechanical Keyboard RGB,Technology,South,2,12350.0,0.05,4192.5
+ORD-2025008,2025-12-12,CUST-1005,Nexus Media Group (Vikram Singh),4-Drawer Filing Cabinet,Furniture,West,7,74375.0,0.15,19687.5
+ORD-2025009,2026-05-24,CUST-1008,Summit EduTech (Kavita Joshi),Gel Pens Assorted (Pack 24),Office Supplies,South,1,722.5,0.15,335.75
+ORD-2025010,2026-01-23,CUST-1002,TechStart Solutions (Priya Sharma),Electric Standing Desk,Furniture,West,6,134400.0,0.2,25536.0
+ORD-2025011,2026-02-06,CUST-1010,Quantum Dynamics (Deepak Mehta),Electric Standing Desk,Furniture,South,4,95200.0,0.15,19488.0
+ORD-2025012,2025-10-23,CUST-1005,Nexus Media Group (Vikram Singh),Monitor 27-inch 4K,Technology,East,5,114000.0,0.05,30720.0
+ORD-2025013,2025-08-05,CUST-1009,,USB-C Docking Station,Technology,North,9,67500.0,0.0,20250.0
+ORD-2025014,2025-12-10,CUST-1001,Acme India Pvt Ltd (Rajesh Kumar),Gel Pens Assorted (Pack 24),Office Supplies,East,1,765.0,0.1,365.5
+ORD-2025015,2026-02-23,CUST-1001,Acme India Pvt Ltd (Rajesh Kumar),Desk Organizer Mesh,Office Supplies,South,7,9975.0,0.05,3685.5
+ORD-2025016,2025-02-10,CUST-1007,Horizon Research Labs (Siddharth Nair),Mechanical Keyboard RGB,Technology,South,1,5200.0,0.2,1560.0
+ORD-2025017,2025-04-09,CUST-1008,Summit EduTech (Kavita Joshi),Executive Leather Sofa,Furniture,East,1,40500.0,0.1,7200.0
+ORD-2025018,2026-04-07,CUST-1003,Global Logistics India (Amit Patel),USB-C Docking Station,Technology,South,7,47250.0,0.1,13125.0
+ORD-2025019,2026-01-28,CUST-1010,Quantum Dynamics (Deepak Mehta),4-Drawer Filing Cabinet,Furniture,North,3,37500.0,0.0,11250.0
+ORD-2025020,2025-04-06,CUST-1004,Apex Financial Services (Sneha Gupta),Bookshelf 5-Tier,Furniture,East,7,53200.0,0.2,12236.0
+ORD-2025021,2025-06-20,CUST-1004,Apex Financial Services (Sneha Gupta),Wireless Noise-Canceling Headphones,Technology,East,6,61200.0,0.15,17424.0
+ORD-2025022,2025-01-28,CUST-1004,Apex Financial Services (Sneha Gupta),Executive Leather Sofa,Furniture,West,7,267750.0,0.15,44100.0
+ORD-2025023,2026-04-18,CUST-1007,Horizon Research Labs (Siddharth Nair),Ergonomic Mesh Chair,Furniture,North,9,133650.0,0.1,30442.5
+ORD-2025024,2025-09-16,CUST-1007,Horizon Research Labs (Siddharth Nair),Executive Leather Sofa,Furniture,North,5,225000.0,0.0,45000.0
+ORD-2025025,2025-08-22,CUST-1008,Summit EduTech (Kavita Joshi),Gel Pens Assorted (Pack 24),Office Supplies,South,8,6800.0,0.0,3400.0
+ORD-2025026,2025-04-23,CUST-1001,Acme India Pvt Ltd (Rajesh Kumar),4-Drawer Filing Cabinet,Furniture,West,7,83125.0,0.05,24062.5
+ORD-2025027,2026-01-22,CUST-1001,Acme India Pvt Ltd (Rajesh Kumar),Laptop Pro 15,Technology,West,1,76500.0,0.1,15130.0
+ORD-2025028,2025-04-23,CUST-1002,TechStart Solutions (Priya Sharma),4-Drawer Filing Cabinet,Furniture,South,7,70000.0,0.2,17500.0
+ORD-2025029,2025-08-13,CUST-1001,Acme India Pvt Ltd (Rajesh Kumar),Heavy-Duty Stapler Set,Office Supplies,North,6,6120.0,0.15,2538.0
+ORD-2025030,2026-03-15,CUST-1008,Summit EduTech (Kavita Joshi),Premium Copy Paper (5 Reams),Office Supplies,East,6,8640.0,0.2,3024.0
+ORD-2025031,2025-07-17,CUST-1006,Vanguard Health India (Ananya Reddy),Premium Copy Paper (5 Reams),Office Supplies,North,6,8640.0,0.2,3024.0
+ORD-2025032,2026-02-07,CUST-1010,Quantum Dynamics (Deepak Mehta),Gel Pens Assorted (Pack 24),Office Supplies,West,7,5057.5,0.15,2350.25
+ORD-2025033,2026-05-04,CUST-1001,Acme India Pvt Ltd (Rajesh Kumar),Heavy-Duty Stapler Set,Office Supplies,West,1,1080.0,0.1,462.0
+ORD-2025034,2026-04-18,CUST-1002,TechStart Solutions (Priya Sharma),Heavy-Duty Stapler Set,Office Supplies,East,7,7140.0,0.15,2961.0
+ORD-2025035,2025-05-24,CUST-1010,Quantum Dynamics (Deepak Mehta),Mechanical Keyboard RGB,Technology,West,1,6175.0,,2096.25
+ORD-2025036,2025-10-31,CUST-1005,Nexus Media Group (Vikram Singh),Wireless Noise-Canceling Headphones,Technology,East,9,108000.0,0.0,34560.0
+ORD-2025037,2025-04-09,CUST-1003,Global Logistics India (Amit Patel),Dry Erase Whiteboard 4x3,Office Supplies,West,6,33000.0,0.0,10560.0
+ORD-2025038,2026-02-24,CUST-1006,Vanguard Health India (Ananya Reddy),Executive Leather Sofa,Furniture,West,9,364500.0,0.1,64800.0
+ORD-2025039,2025-06-02,CUST-1002,TechStart Solutions (Priya Sharma),Electric Standing Desk,Furniture,South,6,151200.0,0.1,32928.0
+ORD-2025040,2025-06-10,CUST-1004,Apex Financial Services (Sneha Gupta),USB-C Docking Station,Technology,West,4,27000.0,0.1,7500.0
+ORD-2025041,2026-02-05,CUST-1001,Acme India Pvt Ltd (Rajesh Kumar),Gel Pens Assorted (Pack 24),Office Supplies,South,7,4760.0,0.2,2142.0
+ORD-2025042,2026-03-14,CUST-1008,Summit EduTech (Kavita Joshi),Gel Pens Assorted (Pack 24),Office Supplies,South,5,4250.0,0.0,2125.0
+ORD-2025043,2025-10-11,CUST-1001,Acme India Pvt Ltd (Rajesh Kumar),Mechanical Keyboard RGB,Technology,North,3,16575.0,0.15,5216.25
+ORD-2025044,2025-07-11,CUST-1001,Acme India Pvt Ltd (Rajesh Kumar),Mechanical Keyboard RGB,Technology,West,5,29250.0,0.1,9587.5
+ORD-2025045,2025-02-06,CUST-1008,Summit EduTech (Kavita Joshi),Laptop Pro 15,Technology,South,5,382500.0,0.1,75650.0
+ORD-2025046,2025-04-26,CUST-1005,Nexus Media Group (Vikram Singh),Premium Copy Paper (5 Reams),Office Supplies,West,3,5130.0,0.05,1998.0
+ORD-2025047,2025-11-19,CUST-1008,Summit EduTech (Kavita Joshi),Electric Standing Desk,Furniture,West,6,159600.0,0.05,36624.0
+ORD-2025048,2025-06-04,CUST-1010,Quantum Dynamics (Deepak Mehta),Electric Standing Desk,Furniture,North,8,224000.0,0.0,53760.0
+ORD-2025049,2026-01-28,CUST-1006,Vanguard Health India (Ananya Reddy),Desk Organizer Mesh,Office Supplies,South,7,9975.0,0.05,3685.5
+ORD-2025050,2026-02-12,CUST-1010,Quantum Dynamics (Deepak Mehta),Premium Copy Paper (5 Reams),Office Supplies,West,4,7200.0,0.0,2880.0
+ORD-2025051,2026-05-27,CUST-1003,Global Logistics India (Amit Patel),Dry Erase Whiteboard 4x3,Office Supplies,South,2,9900.0,0.1,2948.0
+ORD-2025052,2025-07-09,CUST-1006,Vanguard Health India (Ananya Reddy),Electric Standing Desk,Furniture,South,1,23800.0,0.15,4872.0
+ORD-2025053,2025-02-23,CUST-1005,Nexus Media Group (Vikram Singh),USB-C Docking Station,Technology,West,5,31875.0,0.15,8437.5
+ORD-2025054,2025-12-16,CUST-1003,Global Logistics India (Amit Patel),Dry Erase Whiteboard 4x3,Office Supplies,West,2,9350.0,0.15,2662.0
+ORD-2025055,2025-04-16,CUST-1003,Global Logistics India (Amit Patel),Wireless Noise-Canceling Headphones,Technology,West,7,79800.0,0.05,24696.0
+ORD-2025056,2026-04-19,CUST-1005,Nexus Media Group (Vikram Singh),Ergonomic Mesh Chair,Furniture,West,5,82500.0,0.0,20625.0
+ORD-2025057,2025-02-27,CUST-1010,Quantum Dynamics (Deepak Mehta),Monitor 27-inch 4K,Technology,West,6,144000.0,0.0,40320.0
+ORD-2025058,2026-05-03,CUST-1005,Nexus Media Group (Vikram Singh),USB-C Docking Station,Technology,East,5,30000.0,0.2,7500.0
+ORD-2025059,2025/11/04,CUST-1003,Global Logistics India (Amit Patel),Executive Leather Sofa,Furniture,North,6,270000.0,0.0,54000.0
+ORD-2025060,2025-10-12,CUST-1005,Nexus Media Group (Vikram Singh),Premium Copy Paper (5 Reams),Office Supplies,South,4,5760.0,0.2,2016.0
+ORD-2025061,2025-07-23,CUST-1010,Quantum Dynamics (Deepak Mehta),Bookshelf 5-Tier,Furniture,East,4,38000.0,0.0,10640.0
+ORD-2025062,2025-09-11,CUST-1005,Nexus Media Group (Vikram Singh),Heavy-Duty Stapler Set,Office Supplies,South,6,5760.0,0.2,2304.0
+ORD-2025063,2025-04-10,CUST-1002,TechStart Solutions (Priya Sharma),Heavy-Duty Stapler Set,Office Supplies,South,3,3420.0,0.05,1503.0
+ORD-2025064,2025-11-21,CUST-1004,Apex Financial Services (Sneha Gupta),Heavy-Duty Stapler Set,Office Supplies,North,4,4080.0,0.15,1692.0
+ORD-2025065,2026-01-15,CUST-1001,Acme India Pvt Ltd (Rajesh Kumar),USB-C Docking Station,Technology,East,5,31875.0,0.15,8437.5
+ORD-2025066,2026-02-21,CUST-1008,Summit EduTech (Kavita Joshi),Executive Leather Sofa,Furniture,West,2,72000.0,0.2,10800.0
+ORD-2025067,2026-05-14,CUST-1002,TechStart Solutions (Priya Sharma),Premium Copy Paper (5 Reams),Office Supplies,South,8,11520.0,0.2,4032.0
+ORD-2025068,2026-02-22,CUST-1003,Global Logistics India (Amit Patel),Mechanical Keyboard RGB,Technology,South,5,30875.0,0.05,10481.25
+ORD-2025069,2026-05-08,CUST-1008,Summit EduTech (Kavita Joshi),USB-C Docking Station,Technology,North,9,57375.0,0.15,15187.5
+ORD-2025070,2026-01-29,CUST-1005,Nexus Media Group (Vikram Singh),Wireless Noise-Canceling Headphones,Technology,North,3,30600.0,0.15,8712.0
+ORD-2025071,2025-04-06,CUST-1008,Summit EduTech (Kavita Joshi),Desk Organizer Mesh,Office Supplies,West,1,1200.0,0.2,396.0
+ORD-2025072,2025-10-06,CUST-1009,Pinnacle Retail India (Rohan Verma),Premium Copy Paper (5 Reams),Office Supplies,South,1,1800.0,0.0,720.0
+ORD-2025073,2025-03-03,CUST-1004,Apex Financial Services (Sneha Gupta),USB-C Docking Station,Technology,East,3,22500.0,0.0,6750.0
+ORD-2025074,2026-01-31,CUST-1009,Pinnacle Retail India (Rohan Verma),Dry Erase Whiteboard 4x3,Office Supplies,North,7,32725.0,0.15,9317.0
+ORD-2025075,2026-01-19,CUST-1004,Apex Financial Services (Sneha Gupta),Heavy-Duty Stapler Set,Office Supplies,East,5,4800.0,0.2,1920.0
+ORD-2025076,2025-04-09,CUST-1009,Pinnacle Retail India (Rohan Verma),Desk Organizer Mesh,Office Supplies,West,5,7500.0,0.0,2850.0
+ORD-2025077,2025-02-08,CUST-1005,Nexus Media Group (Vikram Singh),Electric Standing Desk,Furniture,East,5,126000.0,0.1,27440.0
+ORD-2025078,2025-08-03,CUST-1002,TechStart Solutions (Priya Sharma),Dry Erase Whiteboard 4x3,Office Supplies,North,1,4400.0,0.2,1188.0
+ORD-2025079,2025-08-18,CUST-1007,Horizon Research Labs (Siddharth Nair),Bookshelf 5-Tier,Furniture,West,9,81225.0,0.05,21888.0
+ORD-2025080,2025-07-13,CUST-1005,Nexus Media Group (Vikram Singh),USB-C Docking Station,Technology,South,3,18000.0,0.2,4500.0
+ORD-2025081,2025-12-08,CUST-1004,Apex Financial Services (Sneha Gupta),Laptop Pro 15,Technology,North,4,289000.0,0.15,53380.0
+ORD-2025082,2025-03-11,CUST-1003,Global Logistics India (Amit Patel),Mechanical Keyboard RGB,Technology,South,7,40950.0,0.1,13422.5
+ORD-2025083,2026-06-15,CUST-1007,Horizon Research Labs (Siddharth Nair),Executive Leather Sofa,Furniture,North,2,76500.0,0.15,12600.0
+ORD-2025084,2025-02-27,CUST-1004,Apex Financial Services (Sneha Gupta),Laptop Pro 15,Technology,East,1,76500.0,0.1,15130.0
+ORD-2025085,2025-12-14,CUST-1009,Pinnacle Retail India (Rohan Verma),Dry Erase Whiteboard 4x3,Office Supplies,North,9,49500.0,0.0,15840.0
+ORD-2025086,2025-04-27,CUST-1006,Vanguard Health India (Ananya Reddy),4-Drawer Filing Cabinet,Furniture,North,5,50000.0,0.2,12500.0
+ORD-2025087,2025-07-22,CUST-1005,Nexus Media Group (Vikram Singh),Gel Pens Assorted (Pack 24),Office Supplies,West,9,7267.5,0.05,3557.25
+ORD-2025088,2025-02-16,CUST-1009,Pinnacle Retail India (Rohan Verma),Laptop Pro 15,Technology,North,6,459000.0,0.1,90780.0
+ORD-2025089,2026-04-16,CUST-1009,Pinnacle Retail India (Rohan Verma),Dry Erase Whiteboard 4x3,Office Supplies,South,8,37400.0,0.15,10648.0
+ORD-2025090,2026-02-12,CUST-1005,Nexus Media Group (Vikram Singh),4-Drawer Filing Cabinet,Furniture,West,8,95000.0,0.05,27500.0
+ORD-2025091,2025-11-12,CUST-1002,TechStart Solutions (Priya Sharma),Laptop Pro 15,Technology,West,6,510000.0,0.0,112200.0
+ORD-2025092,2025-07-20,CUST-1001,Acme India Pvt Ltd (Rajesh Kumar),Mechanical Keyboard RGB,Technology,North,3,15600.0,0.2,4680.0
+ORD-2025093,2026-01-25,CUST-1002,TechStart Solutions (Priya Sharma),Desk Organizer Mesh,Office Supplies,East,9,12825.0,0.05,4738.5
+ORD-2025094,2025-01-10,CUST-1008,Summit EduTech (Kavita Joshi),Electric Standing Desk,Furniture,East,5,140000.0,0.0,33600.0
+ORD-2025095,2026-01-09,CUST-1001,Acme India Pvt Ltd (Rajesh Kumar),Ergonomic Mesh Chair,Furniture,East,5,78375.0,0.05,18768.75
+ORD-2025096,2025-03-04,CUST-1009,Pinnacle Retail India (Rohan Verma),Executive Leather Sofa,Furniture,East,1,36000.0,0.2,5400.0
+ORD-2025097,2025-04-15,CUST-1003,Global Logistics India (Amit Patel),Premium Copy Paper (5 Reams),Office Supplies,North,7,10710.0,0.15,3906.0
+ORD-2025098,2026-03-13,CUST-1007,Horizon Research Labs (Siddharth Nair),USB-C Docking Station,Technology,North,3,22500.0,0.0,6750.0
+ORD-2025099,2025-03-26,CUST-1009,Pinnacle Retail India (Rohan Verma),Ergonomic Mesh Chair,Furniture,East,4,66000.0,0.0,16500.0
+ORD-2025100,2026-05-03,CUST-1002,TechStart Solutions (Priya Sharma),Heavy-Duty Stapler Set,Office Supplies,South,2,2160.0,0.1,924.0
+ORD-2025101,2025-11-02,CUST-1001,Acme India Pvt Ltd (Rajesh Kumar),4-Drawer Filing Cabinet,Furniture,North,9,112500.0,0.0,33750.0
+ORD-2025102,2025-10-30,CUST-1007,Horizon Research Labs (Siddharth Nair),Desk Organizer Mesh,Office Supplies,North,2,2700.0,0.1,966.0
+ORD-2025103,2026-03-11,CUST-1007,Horizon Research Labs (Siddharth Nair),4-Drawer Filing Cabinet,Furniture,South,6,71250.0,0.05,20625.0
+ORD-2025104,2025-04-08,CUST-1002,TechStart Solutions (Priya Sharma),Executive Leather Sofa,Furniture,East,2,76500.0,0.15,12600.0
+ORD-2025105,2025-09-06,CUST-1006,Vanguard Health India (Ananya Reddy),Mechanical Keyboard RGB,Technology,South,7,43225.0,0.05,14673.75
+ORD-2025106,2025-03-22,CUST-1005,Nexus Media Group (Vikram Singh),Mechanical Keyboard RGB,Technology,South,8,52000.0,0.0,18200.0
+ORD-2025107,2025-11-26,CUST-1001,Acme India Pvt Ltd (Rajesh Kumar),Monitor 27-inch 4K,Technology,South,5,114000.0,0.05,30720.0
+ORD-2025108,2025-07-24,CUST-1003,Global Logistics India (Amit Patel),Premium Copy Paper (5 Reams),Office Supplies,East,7,11340.0,0.1,4284.0
+ORD-2025109,2026-01-09,CUST-1008,Summit EduTech (Kavita Joshi),Wireless Noise-Canceling Headphones,Technology,West,3,32400.0,0.1,9648.0
+ORD-2025110,2025-04-03,CUST-1002,TechStart Solutions (Priya Sharma),Monitor 27-inch 4K,Technology,East,3,57600.0,0.2,13248.0
+ORD-2025111,2025-01-05,CUST-1002,TechStart Solutions (Priya Sharma),Bookshelf 5-Tier,Furniture,South,5,47500.0,0.0,13300.0
+ORD-2025112,2025-08-21,CUST-1010,Quantum Dynamics (Deepak Mehta),Electric Standing Desk,Furniture,North,9,239400.0,0.05,54936.0
+ORD-2025113,2025-09-06,CUST-1009,Pinnacle Retail India (Rohan Verma),Executive Leather Sofa,Furniture,East,1,42750.0,0.05,8100.0
+ORD-2025114,2025-09-14,CUST-1008,Summit EduTech (Kavita Joshi),Wireless Noise-Canceling Headphones,Technology,North,4,45600.0,0.05,14112.0
+ORD-2025115,2025-01-28,CUST-1007,Horizon Research Labs (Siddharth Nair),Electric Standing Desk,Furniture,North,8,201600.0,0.1,43904.0
+ORD-2025116,2025-01-07,CUST-1003,Global Logistics India (Amit Patel),Gel Pens Assorted (Pack 24),Office Supplies,East,2,1615.0,0.05,790.5
+ORD-2025117,2025-01-15,CUST-1009,Pinnacle Retail India (Rohan Verma),Desk Organizer Mesh,Office Supplies,West,7,10500.0,0.0,3990.0
+ORD-2025118,2025-09-30,CUST-1007,Horizon Research Labs (Siddharth Nair),Electric Standing Desk,Furniture,South,9,252000.0,0.0,60480.0
+ORD-2025119,2026-06-09,CUST-1004,Apex Financial Services (Sneha Gupta),Mechanical Keyboard RGB,Technology,South,3,19500.0,0.0,6825.0
+ORD-2025120,2025-04-19,CUST-1002,TechStart Solutions (Priya Sharma),Dry Erase Whiteboard 4x3,Office Supplies,East,6,31350.0,0.05,9702.0

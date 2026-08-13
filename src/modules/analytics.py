@@ -1,0 +1,200 @@
+"""
+src/modules/analytics.py
+------------------------
+Business Analytics Calculation Module.
+
+Contains pure, reusable Pandas data analysis functions that calculate key performance
+indicators (KPIs), metric aggregations, breakdown tables, and customer rankings.
+
+All functions accept a Pandas DataFrame (cleaned sales dataset) and return primitive
+values (float, int) or aggregated DataFrames ready for UI visualization.
+"""
+
+from typing import Optional
+import pandas as pd
+import numpy as np
+
+
+def get_total_sales(df: pd.DataFrame) -> float:
+    """
+    Purpose: Calculates the gross revenue across all records.
+    Returns: Total sales sum as float.
+    """
+    if df.empty or "Sales" not in df.columns:
+        return 0.0
+    return float(df["Sales"].sum())
+
+
+def get_total_profit(df: pd.DataFrame) -> float:
+    """
+    Purpose: Calculates the total net profit achieved across all records.
+    Returns: Total profit sum as float.
+    """
+    if df.empty or "Profit" not in df.columns:
+        return 0.0
+    return float(df["Profit"].sum())
+
+
+def get_total_orders(df: pd.DataFrame) -> int:
+    """
+    Purpose: Counts total unique order transactions.
+    Returns: Number of unique Order_IDs.
+    """
+    if df.empty or "Order_ID" not in df.columns:
+        return 0
+    return int(df["Order_ID"].nunique())
+
+
+def get_customer_count(df: pd.DataFrame) -> int:
+    """
+    Purpose: Counts total unique active customer accounts.
+    Returns: Number of unique Customer_IDs.
+    """
+    if df.empty or "Customer_ID" not in df.columns:
+        return 0
+    return int(df["Customer_ID"].nunique())
+
+
+def get_average_order_value(df: pd.DataFrame) -> float:
+    """
+    Purpose: Calculates Average Order Value (AOV = Total Sales / Total Orders).
+    Returns: Average revenue per order as float.
+    """
+    orders = get_total_orders(df)
+    if orders == 0:
+        return 0.0
+    sales = get_total_sales(df)
+    return round(sales / orders, 2)
+
+
+def get_sales_by_month(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Purpose: Aggregates sales and profit chronologically by Month.
+    Returns: DataFrame with columns ['YearMonth', 'Month_Name', 'Sales', 'Profit'].
+    """
+    if df.empty or "Order_Date" not in df.columns:
+        return pd.DataFrame(columns=["YearMonth", "Month_Name", "Sales", "Profit"])
+
+    temp_df = df.copy()
+    temp_df["YearMonth"] = temp_df["Order_Date"].dt.to_period("M").astype(str)
+    temp_df["Month_Name"] = temp_df["Order_Date"].dt.strftime("%b %Y")
+
+    monthly_df = (
+        temp_df.groupby(["YearMonth", "Month_Name"])[["Sales", "Profit"]]
+        .sum()
+        .reset_index()
+        .sort_values(by="YearMonth")
+    )
+    return monthly_df
+
+
+def get_sales_by_product(df: pd.DataFrame, top_n: Optional[int] = None) -> pd.DataFrame:
+    """
+    Purpose: Aggregates total sales, quantity sold, and profit grouped by Product.
+    Returns: DataFrame sorted by Sales descending. Option to limit to top N products.
+    """
+    if df.empty or "Product" not in df.columns:
+        return pd.DataFrame(columns=["Product", "Sales", "Quantity", "Profit"])
+
+    prod_df = (
+        df.groupby("Product")[["Sales", "Quantity", "Profit"]]
+        .sum()
+        .reset_index()
+        .sort_values(by="Sales", ascending=False)
+    )
+
+    if top_n and top_n > 0:
+        prod_df = prod_df.head(top_n)
+
+    return prod_df.reset_index(drop=True)
+
+
+def get_sales_by_category(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Purpose: Aggregates total sales, profit, and calculates category profit margins.
+    Returns: DataFrame with columns ['Category', 'Sales', 'Profit', 'Profit_Margin_%'].
+    """
+    if df.empty or "Category" not in df.columns:
+        return pd.DataFrame(columns=["Category", "Sales", "Profit", "Profit_Margin_%"])
+
+    cat_df = df.groupby("Category")[["Sales", "Profit"]].sum().reset_index()
+    cat_df["Profit_Margin_%"] = np.where(
+        cat_df["Sales"] > 0, np.round((cat_df["Profit"] / cat_df["Sales"]) * 100, 2), 0.0
+    )
+    return cat_df.sort_values(by="Sales", ascending=False).reset_index(drop=True)
+
+
+def get_sales_by_region(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Purpose: Aggregates total sales and regional contribution percentage.
+    Returns: DataFrame with columns ['Region', 'Sales', 'Profit', 'Sales_Share_%'].
+    """
+    if df.empty or "Region" not in df.columns:
+        return pd.DataFrame(columns=["Region", "Sales", "Profit", "Sales_Share_%"])
+
+    reg_df = df.groupby("Region")[["Sales", "Profit"]].sum().reset_index()
+    total_sales = reg_df["Sales"].sum()
+
+    reg_df["Sales_Share_%"] = np.where(
+        total_sales > 0, np.round((reg_df["Sales"] / total_sales) * 100, 2), 0.0
+    )
+    return reg_df.sort_values(by="Sales", ascending=False).reset_index(drop=True)
+
+
+def get_profit_by_product(df: pd.DataFrame, top_n: Optional[int] = None) -> pd.DataFrame:
+    """
+    Purpose: Aggregates net profit generated by individual products.
+    Returns: DataFrame sorted by Profit descending. Option to limit to top N products.
+    """
+    if df.empty or "Product" not in df.columns:
+        return pd.DataFrame(columns=["Product", "Profit", "Sales"])
+
+    profit_df = (
+        df.groupby("Product")[["Profit", "Sales"]]
+        .sum()
+        .reset_index()
+        .sort_values(by="Profit", ascending=False)
+    )
+
+    if top_n and top_n > 0:
+        profit_df = profit_df.head(top_n)
+
+    return profit_df.reset_index(drop=True)
+
+
+def get_profit_by_region(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Purpose: Aggregates regional net profit and calculates regional profit margins.
+    Returns: DataFrame sorted by Profit descending.
+    """
+    if df.empty or "Region" not in df.columns:
+        return pd.DataFrame(columns=["Region", "Profit", "Sales", "Profit_Margin_%"])
+
+    reg_profit = df.groupby("Region")[["Profit", "Sales"]].sum().reset_index()
+    reg_profit["Profit_Margin_%"] = np.where(
+        reg_profit["Sales"] > 0, np.round((reg_profit["Profit"] / reg_profit["Sales"]) * 100, 2), 0.0
+    )
+    return reg_profit.sort_values(by="Profit", ascending=False).reset_index(drop=True)
+
+
+def get_top_customers(df: pd.DataFrame, n: int = 10) -> pd.DataFrame:
+    """
+    Purpose: Ranks top N customers by total monetary spend, profit, and order count.
+    Returns: DataFrame with Customer_ID, Customer_Name, Total_Sales, Total_Profit, Order_Count.
+    """
+    if df.empty or "Customer_ID" not in df.columns:
+        return pd.DataFrame(
+            columns=["Customer_ID", "Customer_Name", "Total_Sales", "Total_Profit", "Order_Count"]
+        )
+
+    cust_df = (
+        df.groupby(["Customer_ID", "Customer_Name"])
+        .agg(
+            Total_Sales=("Sales", "sum"),
+            Total_Profit=("Profit", "sum"),
+            Order_Count=("Order_ID", "nunique"),
+        )
+        .reset_index()
+        .sort_values(by="Total_Sales", ascending=False)
+    )
+    return cust_df.head(n).reset_index(drop=True)
