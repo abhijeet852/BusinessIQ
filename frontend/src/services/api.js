@@ -1,7 +1,15 @@
 import axios from 'axios';
 
-// Default to live Render backend URL, or fallback to environment variable / localhost
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://businessiq.onrender.com/api';
+const getBaseUrl = () => {
+  if (import.meta.env.VITE_API_BASE_URL && import.meta.env.VITE_API_BASE_URL.trim() !== '') {
+    return import.meta.env.VITE_API_BASE_URL;
+  }
+  const isLocal = typeof window !== 'undefined' && 
+    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+  return isLocal ? 'http://127.0.0.1:8000/api' : 'https://businessiq.onrender.com/api';
+};
+
+const API_BASE_URL = getBaseUrl();
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -9,6 +17,7 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
 });
+
 
 // Interceptor to inject JWT Authorization header
 api.interceptors.request.use((config) => {
