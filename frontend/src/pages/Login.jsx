@@ -7,15 +7,12 @@ import {
   Eye,
   EyeOff,
   AlertTriangle,
-  BarChart3,
-  BrainCircuit,
+  BarChart2,
+  TrendingUp,
   Lightbulb,
   ShieldCheck,
   ArrowRight,
   RefreshCw,
-  TrendingUp,
-  Award,
-  CheckCircle2,
 } from 'lucide-react';
 
 const Login = ({ onLoginSuccess }) => {
@@ -37,9 +34,9 @@ const Login = ({ onLoginSuccess }) => {
       setSuccessRedirect(true);
       setTimeout(() => {
         onLoginSuccess(data.user, data.access_token);
-      }, 200); // Fast 200ms smooth transition
+      }, 200); // 200ms smooth transition
     } catch (err) {
-      setError('Incorrect email or password. Please check your credentials and try again.');
+      setError('Incorrect email or password. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -51,159 +48,99 @@ const Login = ({ onLoginSuccess }) => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-slate-900 flex flex-col lg:flex-row font-sans selection:bg-blue-600 selection:text-white overflow-x-hidden">
+    <div className="min-h-screen w-full bg-slate-900 flex flex-col lg:flex-row font-sans selection:bg-blue-600 selection:text-white overflow-hidden">
       {/* =================================================================== */}
-      {/* LEFT ~55%: DATAPULSE BRAND & VISUAL DATA EXPERIENCE                 */}
+      {/* LEFT ~45%: DATAPULSE BRAND & ABSTRACT DATA VISUALIZATION           */}
       {/* =================================================================== */}
-      <div className="lg:w-[55%] bg-slate-900 text-white p-8 lg:p-14 flex flex-col justify-between relative overflow-hidden border-b lg:border-b-0 lg:border-r border-slate-800">
+      <div className="lg:w-[45%] bg-slate-900 text-white p-8 lg:p-14 flex flex-col justify-between relative overflow-hidden border-b lg:border-b-0 lg:border-r border-slate-800/80">
         
-        {/* Subtle Ambient Depth Gradients & Data Line Visualizations */}
-        <div className="absolute inset-0 pointer-events-none opacity-20">
-          <div className="absolute -top-32 -left-32 w-96 h-96 bg-blue-600/30 rounded-full blur-3xl"></div>
-          <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl"></div>
-          
-          {/* SVG Animated Data Stream */}
-          <svg className="w-full h-full stroke-blue-500/30 fill-none" viewBox="0 0 1000 1000">
-            <line x1="0" y1="200" x2="1000" y2="200" strokeWidth="1" strokeDasharray="6 6" />
-            <line x1="0" y1="400" x2="1000" y2="400" strokeWidth="1" strokeDasharray="6 6" />
-            <line x1="0" y1="600" x2="1000" y2="600" strokeWidth="1" strokeDasharray="6 6" />
-            <line x1="0" y1="800" x2="1000" y2="800" strokeWidth="1" strokeDasharray="6 6" />
-            
-            {/* Animated Flowing Revenue Graph Curve */}
+        {/* Subtle Ambient SVG Data Flow Visualization (DATA -> INSIGHTS -> DECISIONS) */}
+        <div className="absolute inset-0 pointer-events-none opacity-25">
+          <svg className="w-full h-full stroke-blue-500/30 fill-none" viewBox="0 0 800 800">
+            {/* Background Data Grid */}
+            <line x1="0" y1="200" x2="800" y2="200" strokeWidth="1" strokeDasharray="4 8" stroke="#334155" />
+            <line x1="0" y1="400" x2="800" y2="400" strokeWidth="1" strokeDasharray="4 8" stroke="#334155" />
+            <line x1="0" y1="600" x2="800" y2="600" strokeWidth="1" strokeDasharray="4 8" stroke="#334155" />
+
+            {/* Smooth Drawing Revenue Curve Line */}
             <path
-              d="M 50 700 Q 250 450, 450 550 T 850 250 T 1000 200"
+              d="M 50 550 Q 200 350, 380 420 T 700 220"
               stroke="#3B82F6"
-              strokeWidth="3.5"
+              strokeWidth="3"
               strokeLinecap="round"
               className="animate-pulse"
             />
-            <path
-              d="M 50 800 Q 300 650, 550 700 T 950 400"
-              stroke="#10B981"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-            />
+
+            {/* Stage Points: DATA -> INSIGHTS -> DECISIONS */}
+            <circle cx="150" cy="460" r="5" fill="#3B82F6" />
+            <circle cx="380" cy="420" r="5" fill="#10B981" />
+            <circle cx="700" cy="220" r="6" fill="#60A5FA" />
           </svg>
         </div>
 
-        {/* 1. TOP LOGO BRANDING */}
+        {/* 1. TOP BRANDING */}
         <div className="relative z-10 space-y-8">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-xl bg-blue-600 flex items-center justify-center text-white font-extrabold shadow-lg shadow-blue-600/30 border border-blue-400/30">
+            <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-extrabold shadow-md shadow-blue-600/30 border border-blue-400/30">
               <Zap className="w-5 h-5 fill-white" />
             </div>
             <div>
-              <h1 className="font-extrabold text-white text-xl tracking-tight leading-none">DATAPULSE</h1>
-              <p className="text-[11px] text-slate-400 mt-1 font-semibold tracking-wide">
-                Business Data Intelligence & Prediction
-              </p>
+              <h1 className="font-extrabold text-white text-lg tracking-tight leading-none">DATAPULSE</h1>
+              <p className="text-[11px] text-slate-400 mt-0.5 font-medium">Business Data Intelligence</p>
             </div>
           </div>
 
-          {/* 2. MAIN BOLD HEADLINE & SUBTITLE */}
-          <div className="pt-4 space-y-4 max-w-xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold uppercase tracking-widest">
-              <span className="w-2 h-2 rounded-full bg-blue-400 animate-ping"></span>
-              Enterprise Intelligence Pipeline
-            </div>
-
-            <h2 className="text-4xl lg:text-5xl font-black text-white tracking-tight leading-[1.1] uppercase">
-              TURN BUSINESS DATA <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300">
-                INTO DECISIONS.
-              </span>
+          {/* 2. SIMPLE, POWERFUL HEADLINE & SUBTITLE */}
+          <div className="pt-2 space-y-3 max-w-md">
+            <h2 className="text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
+              Turn data into <br />
+              <span className="text-blue-400">better decisions.</span>
             </h2>
 
-            <p className="text-slate-300 text-xs lg:text-sm font-medium leading-relaxed max-w-lg">
-              Transform raw business data into analytics, predictions and actionable insights through validated ETL pipelines, 3NF database storage, and explainable machine learning.
+            <p className="text-slate-300 text-xs lg:text-sm font-medium leading-relaxed">
+              Analyze business performance, understand customers and make smarter decisions with data.
             </p>
           </div>
-        </div>
 
-        {/* 3. INTERACTIVE DATA PREVIEW BADGES & CAPABILITIES */}
-        <div className="relative z-10 py-8 space-y-5">
-          {/* Mini Live Data Preview Indicators */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            <div className="p-3 rounded-xl bg-slate-800/80 border border-slate-700/80 shadow-xs backdrop-blur-xs">
-              <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase">
-                <span>REVENUE TREND</span>
-                <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
-              </div>
-              <div className="text-sm font-bold text-white mt-1">₹80.24 L <span className="text-[10px] text-emerald-400 font-bold">+12.4%</span></div>
+          {/* 3. THREE SMALL INLINE CAPABILITY LABELS */}
+          <div className="pt-2 flex flex-wrap items-center gap-2">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700/80 text-xs font-semibold text-slate-300">
+              <BarChart2 className="w-3.5 h-3.5 text-blue-400" />
+              <span>Analytics</span>
             </div>
 
-            <div className="p-3 rounded-xl bg-slate-800/80 border border-slate-700/80 shadow-xs backdrop-blur-xs">
-              <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase">
-                <span>DATA QUALITY</span>
-                <Award className="w-3.5 h-3.5 text-blue-400" />
-              </div>
-              <div className="text-sm font-bold text-white mt-1">94 / 100 <span className="text-[10px] text-blue-400 font-bold">Good</span></div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700/80 text-xs font-semibold text-slate-300">
+              <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Predictions</span>
             </div>
 
-            <div className="p-3 rounded-xl bg-slate-800/80 border border-slate-700/80 shadow-xs backdrop-blur-xs col-span-2 sm:col-span-1">
-              <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase">
-                <span>ML CHURN RISK</span>
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-              </div>
-              <div className="text-sm font-bold text-white mt-1">RF Model <span className="text-[10px] text-emerald-400 font-bold">88% F1</span></div>
-            </div>
-          </div>
-
-          {/* 3 Compact Capability Rows */}
-          <div className="space-y-2.5">
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-800/40 border border-slate-800 hover:border-slate-700 transition-colors">
-              <div className="p-2 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                <BarChart3 className="w-4 h-4" />
-              </div>
-              <div>
-                <h4 className="font-bold text-slate-200 text-xs uppercase tracking-wider">ANALYTICS</h4>
-                <p className="text-slate-400 text-[11px]">Sales, customer segments & product margin performance</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-800/40 border border-slate-800 hover:border-slate-700 transition-colors">
-              <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                <BrainCircuit className="w-4 h-4" />
-              </div>
-              <div>
-                <h4 className="font-bold text-slate-200 text-xs uppercase tracking-wider">PREDICTION</h4>
-                <p className="text-slate-400 text-[11px]">Customer churn risk model comparison & sales forecasting</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-800/40 border border-slate-800 hover:border-slate-700 transition-colors">
-              <div className="p-2 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                <Lightbulb className="w-4 h-4" />
-              </div>
-              <div>
-                <h4 className="font-bold text-slate-200 text-xs uppercase tracking-wider">INSIGHTS</h4>
-                <p className="text-slate-400 text-[11px]">Automated Business Health Score (0–100) & decision support</p>
-              </div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700/80 text-xs font-semibold text-slate-300">
+              <Lightbulb className="w-3.5 h-3.5 text-amber-400" />
+              <span>Insights</span>
             </div>
           </div>
         </div>
 
-        {/* 4. DEVELOPER CREDIT (ELEGANT & PROFESSIONAL) */}
+        {/* 4. DEVELOPER CREDIT (SUBTLE & PROFESSIONAL) */}
         <div className="relative z-10 border-t border-slate-800/80 pt-4 flex items-center justify-between text-xs">
           <div>
-            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">FINAL-YEAR CSE PROJECT</div>
-            <div className="text-slate-200 font-bold mt-0.5">
-              Developed by <span className="text-blue-400 font-extrabold">ABHIJEET CHOLAKE</span>
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">FINAL-YEAR CSE PROJECT</div>
+            <div className="text-slate-300 font-semibold mt-0.5">
+              Developed by <span className="text-white font-bold">ABHIJEET CHOLAKE</span>
             </div>
           </div>
-          <div className="text-[11px] text-slate-400 font-medium">B.Tech Computer Science & Engineering</div>
         </div>
       </div>
 
       {/* =================================================================== */}
-      {/* RIGHT ~45%: REFINED LIGHT AUTHENTICATION COMPOSITION               */}
+      {/* RIGHT ~55%: CLEAN, SPACIOUS LOGIN COMPOSITION                       */}
       {/* =================================================================== */}
-      <div className="lg:w-[45%] bg-slate-50 lg:bg-white text-slate-900 p-8 lg:p-16 flex flex-col justify-center items-center">
-        <div className="w-full max-w-md space-y-7">
+      <div className="lg:w-[55%] bg-white text-slate-900 p-8 lg:p-16 flex flex-col justify-center items-center">
+        <div className="w-full max-w-[440px] space-y-7 animate-fade-in">
           {/* Header Title */}
           <div className="space-y-1.5">
-            <h2 className="text-2xl lg:text-3xl font-black text-slate-900 tracking-tight">Welcome back</h2>
-            <p className="text-xs text-slate-500 font-semibold">Sign in to continue to DataPulse.</p>
+            <h2 className="text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight">Welcome back</h2>
+            <p className="text-xs text-slate-500 font-medium">Sign in to continue to DataPulse.</p>
           </div>
 
           {/* Login Form */}
@@ -215,7 +152,7 @@ const Login = ({ onLoginSuccess }) => {
               </div>
             )}
 
-            {/* Email Input */}
+            {/* Email Field */}
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">EMAIL ADDRESS</label>
               <div className="relative">
@@ -226,12 +163,12 @@ const Login = ({ onLoginSuccess }) => {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="user@datapulse.com"
                   required
-                  className="w-full pl-10 pr-3.5 py-3 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all font-semibold shadow-2xs"
+                  className="w-full pl-10 pr-3.5 py-3 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all font-medium"
                 />
               </div>
             </div>
 
-            {/* Password Input */}
+            {/* Password Field */}
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">PASSWORD</label>
               <div className="relative">
@@ -242,7 +179,7 @@ const Login = ({ onLoginSuccess }) => {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  className="w-full pl-10 pr-10 py-3 text-xs bg-white border border-slate-300 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all font-semibold shadow-2xs"
+                  className="w-full pl-10 pr-10 py-3 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all font-medium"
                 />
                 <button
                   type="button"
@@ -258,7 +195,7 @@ const Login = ({ onLoginSuccess }) => {
             <button
               type="submit"
               disabled={loading || successRedirect}
-              className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:bg-blue-400 text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-blue-600/20 flex items-center justify-center gap-2"
+              className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:bg-blue-400 text-white font-bold text-xs rounded-xl transition-all shadow-xs flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
@@ -278,9 +215,9 @@ const Login = ({ onLoginSuccess }) => {
             </button>
           </form>
 
-          {/* Quick Demo Autofill Credentials */}
-          <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
-            <span className="text-slate-400 font-semibold">Testing DataPulse Workspace?</span>
+          {/* Quick Demo Autofill Link */}
+          <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span className="text-slate-400 font-medium">Testing workspace?</span>
             <button
               type="button"
               onClick={handleAutofill}
@@ -290,7 +227,7 @@ const Login = ({ onLoginSuccess }) => {
             </button>
           </div>
 
-          <div className="text-center text-[11px] text-slate-400 flex items-center justify-center gap-1.5 pt-2 font-semibold">
+          <div className="text-center text-[11px] text-slate-400 flex items-center justify-center gap-1.5 pt-1 font-medium">
             <ShieldCheck className="w-3.5 h-3.5 text-slate-400" />
             <span>Secure access to your business intelligence workspace.</span>
           </div>
