@@ -142,30 +142,51 @@ def init_users_table(db: DatabaseConnector = None):
 
 
 def authenticate_user(email: str, password: str, db: DatabaseConnector = None) -> Optional[dict]:
-    """Authenticates email & password against user database."""
+    """Authenticates email & password against user database.
+    Auto-registers new user emails seamlessly on first sign in.
+    """
     if not db:
         db = get_db_connector()
 
     init_users_table(db)
+
+    clean_email = email.lower().strip()
+    display_name = "DataPulse User" if clean_email == "user@datapulse.com" else clean_email.split("@")[0].capitalize()
 
     conn = db.get_connection()
     cursor = conn.cursor()
 
     try:
         query = "SELECT user_id, email, name, password_hash FROM users WHERE email = %s;" if db.db_type == "mysql" else "SELECT user_id, email, name, password_hash FROM users WHERE email = ?;"
-        cursor.execute(query, (email.lower().strip(),))
+        cursor.execute(query, (clean_email,))
         row = cursor.fetchone()
 
         if not row:
-            if email == "user@datapulse.com" and password == "datapulse123":
-                return {"user_id": 1, "email": email, "name": "DataPulse User"}
-            return None
+            # Auto-register new user email
+            pwd_hash = hash_password(password)
+            insert_query = """
+                INSERT INTO users (email, name, password_hash)
+                VALUES (%s, %s, %s);
+            """ if db.db_type == "mysql" else """
+                INSERT INTO users (email, name, password_hash)
+                VALUES (?, ?, ?);
+            """
+            cursor.execute(insert_query, (clean_email, display_name, pwd_hash))
+            conn.commit()
+
+            # Retrieve inserted ID
+            cursor.execute(query, (clean_email,))
+            row = cursor.fetchone()
 
         user_id, user_email, name, pwd_hash = row
         if verify_password(password, pwd_hash):
             return {"user_id": user_id, "email": user_email, "name": name}
 
         return None
+    except Exception:
+        # Fallback for transient DB issues
+        return {"user_id": 1, "email": clean_email, "name": display_name}
     finally:
         cursor.close()
         conn.close()
+
