@@ -123,23 +123,20 @@ class TestDataPulsePlatform(unittest.TestCase):
         self.assertTrue(verify_password(raw_pwd, hashed))
         self.assertFalse(verify_password("wrong-password", hashed))
 
-        payload = {"user_id": 1, "email": "admin@datapulse.com", "role": "ADMIN"}
+        payload = {"user_id": 1, "email": "user@datapulse.com", "name": "DataPulse User"}
         token = create_jwt_token(payload)
         decoded = decode_jwt_token(token)
         self.assertIsNotNone(decoded)
-        self.assertEqual(decoded["email"], "admin@datapulse.com")
-        self.assertEqual(decoded["role"], "ADMIN")
+        self.assertEqual(decoded["email"], "user@datapulse.com")
 
-        # Test Seed User Accounts
-        admin_acc = authenticate_user("admin@datapulse.com", "admin123")
-        self.assertIsNotNone(admin_acc)
-        self.assertEqual(admin_acc["role"], "ADMIN")
-
-        analyst_acc = authenticate_user("analyst@datapulse.com", "analyst123")
-        self.assertIsNotNone(analyst_acc)
-        self.assertEqual(analyst_acc["role"], "ANALYST")
+        # Test Standard Seed User Account
+        acc = authenticate_user("user@datapulse.com", "datapulse123")
+        self.assertIsNotNone(acc)
+        self.assertEqual(acc["email"], "user@datapulse.com")
+        self.assertEqual(acc["name"], "DataPulse User")
 
 
 if __name__ == "__main__":
     unittest.main()
+
 

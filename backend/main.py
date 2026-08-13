@@ -89,13 +89,11 @@ def get_current_user(authorization: Optional[str] = Header(None)) -> Optional[di
     return decode_jwt_token(token)
 
 
-def require_admin(authorization: Optional[str] = Header(None)) -> dict:
-    """Dependency helper enforcing ADMIN role authorization on endpoints."""
+def require_authenticated_user(authorization: Optional[str] = Header(None)) -> dict:
+    """Dependency helper enforcing authenticated user access on endpoints."""
     user = get_current_user(authorization)
     if not user:
         raise HTTPException(status_code=401, detail="Authentication token missing or expired.")
-    if user.get("role") != "ADMIN":
-        raise HTTPException(status_code=403, detail="Forbidden! Administrative permissions required.")
     return user
 
 
@@ -104,7 +102,7 @@ def require_admin(authorization: Optional[str] = Header(None)) -> dict:
 # -----------------------------------------------------------------------------
 @app.post("/api/auth/login")
 def api_login(req: LoginRequest):
-    """User Login endpoint returning JWT Bearer token and role profile."""
+    """User Login endpoint returning JWT Bearer token and user profile."""
     user = authenticate_user(req.email, req.password)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid email or password credentials.")
@@ -122,8 +120,7 @@ def api_auth_me(authorization: Optional[str] = Header(None)):
     """Returns profile for active authenticated session."""
     user = get_current_user(authorization)
     if not user:
-        # Default guest session if not authenticated
-        return {"user": {"email": "guest@datapulse.com", "name": "Guest User", "role": "ANALYST"}}
+        return {"user": {"email": "user@datapulse.com", "name": "DataPulse User"}}
     return {"user": user}
 
 

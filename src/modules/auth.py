@@ -1,9 +1,9 @@
 """
 src/modules/auth.py
 -------------------
-Authentication & Role-Based Access Control (RBAC) Module for DataPulse.
-Handles password hashing, JWT token generation/validation, user authentication,
-and database persistence for ADMIN and ANALYST user roles.
+Standard Authentication Module for DataPulse.
+Handles password hashing (PBKDF2 SHA-256), JWT token generation & verification,
+and user session authentication for authenticated platform access.
 """
 
 import hashlib
@@ -12,18 +12,15 @@ import hmac
 import json
 import base64
 import time
-from datetime import datetime, timedelta
 from typing import Optional, Dict, Any
 from src.modules.db_connector import get_db_connector, DatabaseConnector
 
-# Secret key for signing JWT tokens (in production, loaded from environment variables)
 JWT_SECRET = os.getenv("DATAPULSE_JWT_SECRET", "datapulse-secret-key-cse-final-year-2026")
-JWT_ALGORITHM = "HS256"
 TOKEN_EXPIRE_HOURS = 24
 
 
 # -----------------------------------------------------------------------------
-# 1. PASSWORD HASHING & VERIFICATION (PBKDF2 SHA256)
+# 1. PASSWORD HASHING & VERIFICATION (PBKDF2 SHA-256)
 # -----------------------------------------------------------------------------
 def hash_password(password: str) -> str:
     """Hashes a plain-text password using PBKDF2 with SHA-256 and salt."""
@@ -48,7 +45,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 # 2. JWT TOKEN GENERATION & DECODING
 # -----------------------------------------------------------------------------
 def create_jwt_token(payload: dict, expires_hours: int = TOKEN_EXPIRE_HOURS) -> str:
-    """Generates a signed JWT token string containing user claims and expiration."""
+    """Generates a signed JWT token string containing user identity and expiration."""
     exp = int(time.time()) + (expires_hours * 3600)
     token_payload = {**payload, "exp": exp, "iat": int(time.time())}
 
@@ -72,11 +69,9 @@ def decode_jwt_token(token: str) -> Optional[dict]:
 
         header_b64, payload_b64, signature_b64 = parts
 
-        # Verify Signature
         signature_input = f"{header_b64}.{payload_b64}".encode("utf-8")
         expected_signature = hmac.new(JWT_SECRET.encode("utf-8"), signature_input, hashlib.sha256).digest()
         
-        # Pad base64 if needed
         sig_padding = "=" * (-len(signature_b64) % 4)
         actual_signature = base64.urlsafe_b64decode(signature_b64 + sig_padding)
 
@@ -95,10 +90,10 @@ def decode_jwt_token(token: str) -> Optional[dict]:
 
 
 # -----------------------------------------------------------------------------
-# 3. DATABASE USERS SEEDING & AUTHENTICATION
+# 3. DATABASE USER SEEDING & AUTHENTICATION
 # -----------------------------------------------------------------------------
 def init_users_table(db: DatabaseConnector = None):
-    """Creates users table and seeds initial ADMIN and ANALYST user accounts."""
+    """Creates users table and seeds standard user account."""
     if not db:
         db = get_db_connector()
 
@@ -112,7 +107,6 @@ def init_users_table(db: DatabaseConnector = None):
                 email VARCHAR(255) UNIQUE NOT NULL,
                 name VARCHAR(255) NOT NULL,
                 password_hash TEXT NOT NULL,
-                role VARCHAR(50) NOT NULL,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             );
         """ if db.db_type == "sqlite" else """
@@ -121,30 +115,25 @@ def init_users_table(db: DatabaseConnector = None):
                 email VARCHAR(255) UNIQUE NOT NULL,
                 name VARCHAR(255) NOT NULL,
                 password_hash TEXT NOT NULL,
-                role VARCHAR(50) NOT NULL,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             );
         """
         cursor.execute(create_query)
 
-        # Seed Users if table is empty
         cursor.execute("SELECT COUNT(*) FROM users;")
         count = cursor.fetchall()[0][0]
 
         if count == 0:
-            admin_hash = hash_password("admin123")
-            analyst_hash = hash_password("analyst123")
+            user_hash = hash_password("datapulse123")
 
             seed_query = """
-                INSERT INTO users (email, name, password_hash, role)
-                VALUES (%s, %s, %s, %s);
+                INSERT INTO users (email, name, password_hash)
+                VALUES (%s, %s, %s);
             """ if db.db_type == "mysql" else """
-                INSERT INTO users (email, name, password_hash, role)
-                VALUES (?, ?, ?, ?);
+                INSERT INTO users (email, name, password_hash)
+                VALUES (?, ?, ?);
             """
-
-            cursor.execute(seed_query, ("admin@datapulse.com", "Abhijeet Admin", admin_hash, "ADMIN"))
-            cursor.execute(seed_query, ("analyst@datapulse.com", "Priya Analyst", analyst_hash, "ANALYST"))
+            cursor.execute(seed_query, ("user@datapulse.com", "DataPulse User", user_hash))
             conn.commit()
 
     finally:
@@ -153,32 +142,28 @@ def init_users_table(db: DatabaseConnector = None):
 
 
 def authenticate_user(email: str, password: str, db: DatabaseConnector = None) -> Optional[dict]:
-    """Authenticates email & password against users database."""
+    """Authenticates email & password against user database."""
     if not db:
         db = get_db_connector()
 
-    # Ensure table is initialized
     init_users_table(db)
 
     conn = db.get_connection()
     cursor = conn.cursor()
 
     try:
-        query = "SELECT user_id, email, name, password_hash, role FROM users WHERE email = %s;" if db.db_type == "mysql" else "SELECT user_id, email, name, password_hash, role FROM users WHERE email = ?;"
+        query = "SELECT user_id, email, name, password_hash FROM users WHERE email = %s;" if db.db_type == "mysql" else "SELECT user_id, email, name, password_hash FROM users WHERE email = ?;"
         cursor.execute(query, (email.lower().strip(),))
         row = cursor.fetchone()
 
         if not row:
-            # Fallback for default seed accounts if db not persisted
-            if email == "admin@datapulse.com" and password == "admin123":
-                return {"user_id": 1, "email": email, "name": "Abhijeet Admin", "role": "ADMIN"}
-            elif email == "analyst@datapulse.com" and password == "analyst123":
-                return {"user_id": 2, "email": email, "name": "Priya Analyst", "role": "ANALYST"}
+            if email == "user@datapulse.com" and password == "datapulse123":
+                return {"user_id": 1, "email": email, "name": "DataPulse User"}
             return None
 
-        user_id, user_email, name, pwd_hash, role = row
+        user_id, user_email, name, pwd_hash = row
         if verify_password(password, pwd_hash):
-            return {"user_id": user_id, "email": user_email, "name": name, "role": role}
+            return {"user_id": user_id, "email": user_email, "name": name}
 
         return None
     finally:

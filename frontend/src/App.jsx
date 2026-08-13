@@ -11,7 +11,7 @@ import SegmentationML from './pages/SegmentationML';
 import ChurnML from './pages/ChurnML';
 import DataManagement from './pages/DataManagement';
 import Reports from './pages/Reports';
-import { getFilterOptions, getAuthMe } from './services/api';
+import { getFilterOptions } from './services/api';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -61,7 +61,7 @@ function App() {
     localStorage.removeItem('datapulse_user');
   };
 
-  // If user is not logged in, render Login page
+  // Standard authentication check: if not logged in, render Login page
   if (!user || !token) {
     return <Login onLoginSuccess={handleLoginSuccess} />;
   }
@@ -79,7 +79,7 @@ function App() {
       case 'regions':
         return <Regions filters={filters} />;
       case 'data_management':
-        return <DataManagement userRole={user.role} />;
+        return <DataManagement />;
       case 'forecast':
         return <Forecast filters={filters} />;
       case 'segmentation':
@@ -94,8 +94,8 @@ function App() {
             <h3 className="font-bold text-slate-900 text-base">DATAPULSE System Settings</h3>
             <div className="text-xs text-slate-600 space-y-2">
               <p>• <strong>API Endpoint Base URL</strong>: <code>https://businessiq.onrender.com/api</code></p>
-              <p>• <strong>Authentication Engine</strong>: JWT Bearer Security Tokens + PBKDF2 Password Hashing</p>
-              <p>• <strong>User Role Permissions</strong>: <code>{user.role}</code> ({user.name})</p>
+              <p>• <strong>Authentication Engine</strong>: Signed JWT Bearer Security Tokens + PBKDF2 Password Hashing</p>
+              <p>• <strong>Authenticated User</strong>: <code>{user.email}</code> ({user.name})</p>
               <p>• <strong>Database Engine</strong>: Relational MySQL / SQLite Normalized 3NF Schema</p>
             </div>
           </div>

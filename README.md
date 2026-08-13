@@ -12,7 +12,7 @@ An impressive, full-stack B.Tech Computer Science & Engineering (CSE) final-year
 RAW BUSINESS DATA (CSV / Excel)
     │
     ▼
-AUTHENTICATION & RBAC (Admin / Analyst Roles)
+AUTHENTICATION (Email & Password Sign In)
     │
     ▼
 DATA INGESTION & VALIDATION (Extract Engine)
@@ -35,12 +35,15 @@ EXPLAINABLE INSIGHTS & BUSINESS DECISION SUPPORT (Health Score & Recommendations
 
 ---
 
-## 🔑 Demo Login Credentials (Viva & Evaluation)
+## 🔑 Single Standard Authentication & Login Credentials
 
-| Role | Email | Password | Allowed Capabilities |
-| :--- | :--- | :--- | :--- |
-| **`ADMIN`** | `admin@datapulse.com` | `admin123` | Full access: Upload, Clean, Import datasets, Settings, Analytics & ML |
-| **`ANALYST`** | `analyst@datapulse.com` | `analyst123` | View access: Dashboard, Analytics, Predictions, View Quality, Export Reports |
+DataPulse uses **ONE standard authentication system** with password hashing (PBKDF2 SHA-256) and signed JWT Bearer security tokens.
+
+Once signed in, the authenticated user has full access to the complete DataPulse platform (Dashboard, Sales, Customers, Products, Regions, Customer Segments, Churn Prediction, Forecasting, Data Management Hub, Reports, and Settings).
+
+### Demo Sign-In Credentials (Viva & Evaluation):
+- **Email**: `user@datapulse.com`
+- **Password**: `datapulse123`
 
 ---
 
@@ -51,7 +54,7 @@ EXPLAINABLE INSIGHTS & BUSINESS DECISION SUPPORT (Health Score & Recommendations
 | **Frontend Framework** | React 18 (Vite SPA) | Single Page Application frontend |
 | **Styling** | Tailwind CSS | Clean light-themed design system |
 | **Data Visualization** | Recharts (SVG) | Interactive trend lines, bar charts, and DAG topology |
-| **Security & Auth** | JWT Tokens + PBKDF2 | Session security & role-based route authorization |
+| **Security & Auth** | JWT Tokens + PBKDF2 | Session security & protected API routes |
 | **Backend Framework** | FastAPI (Python) | High-performance asynchronous REST API server |
 | **Relational Database** | MySQL & SQLite | 3NF normalized schema (`customers`, `products`, `orders`, `users`) |
 | **Data Engineering** | Pandas & NumPy | 5-stage ETL pipeline, Quality Engine (0-100), and aggregations |
@@ -62,14 +65,14 @@ EXPLAINABLE INSIGHTS & BUSINESS DECISION SUPPORT (Health Score & Recommendations
 
 ## 🚀 Key Features
 
-1. 🔒 **Authentication & Role-Based Access Control (RBAC)**:
-   - Password hashing (PBKDF2/SHA256) and JWT Bearer token authentication.
-   - Enforced permissions in FastAPI backend and React frontend for **ADMIN** and **ANALYST** roles.
+1. 🔒 **Standard Authentication & Security**:
+   - Single sign-in flow with PBKDF2/SHA-256 password hashing and signed JWT Bearer security tokens.
+   - Protected API routes in FastAPI backend and protected frontend SPA routes.
 2. ⚡ **Unified Data Management Hub**:
    - Single workflow: `Upload` $\rightarrow$ `Preview` $\rightarrow$ `Validate` $\rightarrow$ `Data Quality (0–100)` $\rightarrow$ `Clean` $\rightarrow$ `Confirm Import` $\rightarrow$ `Processing History & Lineage`.
 3. 🏆 **Data Quality Engine (0–100 Score)**:
    - Transparent Data Quality Score formula evaluating missing cells %, duplicate rows, invalid dates, and numeric outliers with an audit trail log.
-4. 📊 **Shared Executive Dashboard**:
+4. 📊 **Executive DataPulse Dashboard**:
    - Transparent **Business Health Score (0–100)** formula combining Revenue Growth (30%), Profitability (30%), Customer Retention (20%), and Catalog Consistency (20%).
    - Dynamic **Business Alerts** and $2 \times 2$ **Profitability Matrix** (Stars, Volume Drivers, Niche Growth, Underperformers).
 5. 🤖 **ML Model Comparison & SHAP-style Explainability**:
@@ -113,3 +116,4 @@ npm run dev
 ```
 
 Open your browser at **`http://localhost:3000`** to interact with **DataPulse**!
+- Sign in with: `user@datapulse.com` / `datapulse123`

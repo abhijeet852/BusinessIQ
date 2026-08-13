@@ -18,13 +18,13 @@ import {
   Filter,
   Calendar,
   LogOut,
-  Shield,
+  ShieldCheck,
 } from 'lucide-react';
 
 const Layout = ({ activeTab, setActiveTab, children, filters, setFilters, filterOptions, user, onLogout }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  // Grouped Navigation Structure for DataPulse
+  // Simple, Grouped Navigation Structure for DataPulse
   const menuGroups = [
     {
       title: 'MAIN',
@@ -127,7 +127,7 @@ const Layout = ({ activeTab, setActiveTab, children, filters, setFilters, filter
           </nav>
         </div>
 
-        {/* User Profile Footer & Logout Button */}
+        {/* Authenticated User Profile Footer & Logout */}
         <div className="p-3 border-t border-slate-800/80 space-y-2">
           <div className="flex items-center justify-between px-3 py-2 bg-slate-800/40 rounded-lg border border-slate-800">
             <div className="flex items-center gap-2.5">
@@ -135,12 +135,10 @@ const Layout = ({ activeTab, setActiveTab, children, filters, setFilters, filter
                 <User className="w-3.5 h-3.5 text-slate-300" />
               </div>
               <div className="text-xs truncate">
-                <div className="font-semibold text-slate-200 text-[11px] truncate">{user?.name || 'Abhijeet Admin'}</div>
+                <div className="font-semibold text-slate-200 text-[11px] truncate">{user?.name || 'DataPulse User'}</div>
                 <div className="flex items-center gap-1 mt-0.5">
-                  <span className={`px-1.5 py-0.2 rounded text-[9px] font-bold ${
-                    user?.role === 'ADMIN' ? 'bg-purple-900/80 text-purple-200 border border-purple-700' : 'bg-blue-900/80 text-blue-200 border border-blue-700'
-                  }`}>
-                    {user?.role || 'ADMIN'}
+                  <span className="inline-flex items-center gap-1 px-1.5 py-0.2 rounded text-[9px] font-bold bg-emerald-900/80 text-emerald-200 border border-emerald-700">
+                    <ShieldCheck className="w-2.5 h-2.5" /> Authenticated
                   </span>
                 </div>
               </div>

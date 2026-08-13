@@ -11,12 +11,11 @@ import {
   CheckCircle2,
   Clock,
   RefreshCw,
-  Lock,
   ArrowRight,
   ShieldCheck,
 } from 'lucide-react';
 
-const DataManagement = ({ userRole }) => {
+const DataManagement = () => {
   const [activeSubTab, setActiveSubTab] = useState('workflow'); // 'workflow' | 'history' | 'lineage'
   const [file, setFile] = useState(null);
   const [fileMeta, setFileMeta] = useState(null);
@@ -25,8 +24,6 @@ const DataManagement = ({ userRole }) => {
   const [error, setError] = useState(null);
   const [pipelineStatus, setPipelineStatus] = useState(null);
   const [lineage, setLineage] = useState(null);
-
-  const isAdmin = userRole === 'ADMIN';
 
   useEffect(() => {
     const loadMetadata = async () => {
@@ -56,10 +53,6 @@ const DataManagement = ({ userRole }) => {
 
   const handleRunETL = async () => {
     if (!file) return;
-    if (!isAdmin) {
-      setError('Forbidden: Only ADMIN users can execute data cleaning and database imports.');
-      return;
-    }
 
     setLoading(true);
     setError(null);
@@ -122,14 +115,7 @@ const DataManagement = ({ userRole }) => {
         <div className="space-y-6">
           {/* Step 1: Upload Card */}
           <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-bold text-slate-900 text-sm">Step 1: Upload & Validate Dataset</h3>
-              {!isAdmin && (
-                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
-                  <Lock className="w-3 h-3" /> Analyst Mode (View Only)
-                </span>
-              )}
-            </div>
+            <h3 className="font-bold text-slate-900 text-sm">Step 1: Upload & Validate Dataset</h3>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="md:col-span-2 space-y-3">
@@ -137,8 +123,7 @@ const DataManagement = ({ userRole }) => {
                   type="file"
                   accept=".csv, .xlsx, .xls"
                   onChange={handleFileSelect}
-                  disabled={!isAdmin}
-                  className="text-xs text-slate-600 border border-slate-300 rounded-lg p-2.5 w-full focus:outline-none disabled:bg-slate-100 disabled:cursor-not-allowed"
+                  className="text-xs text-slate-600 border border-slate-300 rounded-lg p-2.5 w-full focus:outline-none"
                 />
                 <p className="text-[11px] text-slate-400">Supported formats: CSV (.csv), Excel (.xlsx, .xls). Max file size: 25MB.</p>
               </div>
@@ -151,16 +136,14 @@ const DataManagement = ({ userRole }) => {
               )}
             </div>
 
-            {isAdmin && (
-              <button
-                onClick={handleRunETL}
-                disabled={!file || loading}
-                className="w-full sm:w-auto px-5 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 text-white text-xs font-semibold rounded-lg transition-all flex items-center justify-center gap-2"
-              >
-                {loading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <UploadCloud className="w-4 h-4" />}
-                {loading ? 'Executing 5-Stage ETL Pipeline...' : 'Run Validate, Clean & Import Pipeline'}
-              </button>
-            )}
+            <button
+              onClick={handleRunETL}
+              disabled={!file || loading}
+              className="w-full sm:w-auto px-5 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 text-white text-xs font-semibold rounded-lg transition-all flex items-center justify-center gap-2"
+            >
+              {loading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <UploadCloud className="w-4 h-4" />}
+              {loading ? 'Executing 5-Stage ETL Pipeline...' : 'Run Validate, Clean & Import Pipeline'}
+            </button>
 
             {error && (
               <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700 flex items-center gap-2">
