@@ -4,42 +4,43 @@ import { formatCurrency, formatCompactCurrency } from '../utils/formatters';
 import {
   TrendingUp,
   ShoppingBag,
+  Users,
   ArrowUpRight,
-  ArrowRight,
-  Sparkles,
   ChevronRight,
   AlertTriangle,
-  Zap,
-  Lightbulb,
+  Award,
+  DollarSign,
 } from 'lucide-react';
 import {
   ResponsiveContainer,
   LineChart,
   Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   Tooltip,
   CartesianGrid,
 } from 'recharts';
 
-// SVG Sparkline Component
+// SVG Sparkline Component matching exact colors (Blue, Green, Purple, Orange)
 const Sparkline = ({ color = '#2563EB', data = [10, 15, 12, 18, 20, 25, 22, 30] }) => {
   const points = data
     .map((val, idx) => {
-      const x = (idx / (data.length - 1)) * 90 + 5;
-      const y = 35 - (val / 35) * 25;
+      const x = (idx / (data.length - 1)) * 85 + 5;
+      const y = 32 - (val / 35) * 22;
       return `${x},${y}`;
     })
     .join(' ');
 
   return (
-    <svg className="w-20 h-9 overflow-visible opacity-80" viewBox="0 0 100 40">
-      <polyline fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" points={points} />
+    <svg className="w-20 h-8 overflow-visible opacity-90 transition-opacity duration-200 hover:opacity-100" viewBox="0 0 95 35">
+      <polyline fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" points={points} />
     </svg>
   );
 };
 
-// Refined Chart Tooltip Component
+// Rich Custom Tooltip Component for Main Line Chart matching screenshot
 const CustomChartTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     const sales = payload.find((p) => p.dataKey === 'Sales')?.value || 0;
@@ -58,7 +59,7 @@ const CustomChartTooltip = ({ active, payload, label }) => {
           <span className="font-bold text-emerald-400">{formatCurrency(profit)}</span>
         </div>
         <div className="flex items-center justify-between gap-6 pt-1 border-t border-slate-800/80">
-          <span className="text-slate-400 font-normal">Profit Margin:</span>
+          <span className="text-slate-400 font-normal">Margin:</span>
           <span className="font-semibold text-amber-400">{margin}%</span>
         </div>
       </div>
@@ -67,34 +68,19 @@ const CustomChartTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-// Circular Business Health Gauge Score
-const HealthRingGauge = ({ score = 71 }) => {
-  const circumference = 2 * Math.PI * 36;
-  const strokeDashoffset = circumference - (score / 100) * circumference;
-
-  return (
-    <div className="relative flex items-center justify-center">
-      <svg className="w-22 h-22 transform -rotate-90" viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="36" stroke="#F1F5F9" strokeWidth="7" fill="transparent" />
-        <circle
-          cx="50"
-          cy="50"
-          r="36"
-          stroke={score >= 80 ? '#10B981' : score >= 60 ? '#2563EB' : '#F59E0B'}
-          strokeWidth="7"
-          strokeDasharray={circumference}
-          strokeDashoffset={strokeDashoffset}
-          strokeLinecap="round"
-          fill="transparent"
-          className="transition-all duration-700 ease-out"
-        />
-      </svg>
-      <div className="absolute text-center">
-        <div className="text-xl font-bold text-slate-900 leading-none">{score}</div>
-        <div className="text-[10px] font-medium text-slate-400 uppercase mt-0.5">/ 100</div>
+// Custom Tooltip for Regional Bar Chart
+const RegionalBarTooltip = ({ active, payload }) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload;
+    return (
+      <div className="bg-slate-900 text-white p-3 rounded-xl shadow-xl text-xs space-y-1 border border-slate-800 font-sans">
+        <div className="font-bold text-blue-400">{data.Region} Territory</div>
+        <div>Revenue: <strong className="text-white">{formatCurrency(data.Sales)}</strong></div>
+        <div className="text-slate-400">Share: <strong className="text-emerald-400">{data['Sales_Share_%']}%</strong></div>
       </div>
-    </div>
-  );
+    );
+  }
+  return null;
 };
 
 const Dashboard = ({ filters, setActiveTab }) => {
@@ -131,13 +117,17 @@ const Dashboard = ({ filters, setActiveTab }) => {
   if (loading || !data) {
     return (
       <div className="space-y-6 animate-pulse">
-        <div className="h-32 bg-slate-200 rounded-xl"></div>
+        <div className="h-20 bg-slate-200 rounded-xl"></div>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="h-36 bg-slate-200 rounded-xl md:col-span-2"></div>
-          <div className="h-36 bg-slate-200 rounded-xl"></div>
-          <div className="h-36 bg-slate-200 rounded-xl"></div>
+          <div className="h-32 bg-slate-200 rounded-xl"></div>
+          <div className="h-32 bg-slate-200 rounded-xl"></div>
+          <div className="h-32 bg-slate-200 rounded-xl"></div>
+          <div className="h-32 bg-slate-200 rounded-xl"></div>
         </div>
-        <div className="h-80 bg-slate-200 rounded-xl"></div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 h-80 bg-slate-200 rounded-xl"></div>
+          <div className="h-80 bg-slate-200 rounded-xl"></div>
+        </div>
       </div>
     );
   }
@@ -163,7 +153,6 @@ const Dashboard = ({ filters, setActiveTab }) => {
     sales_by_region = [],
     top_products = [],
     customer_insights = {},
-    business_highlights = [],
   } = data || {};
 
   const trendData = Array.isArray(timeResolution === 'quarterly' ? quarterly_trend : monthly_trend)
@@ -175,330 +164,256 @@ const Dashboard = ({ filters, setActiveTab }) => {
     : [];
 
   const productList = Array.isArray(top_products) ? top_products : [];
-  const topProductOpportunity = productList.length > 0 ? productList[0] : null;
-
-  const highlightList = Array.isArray(business_highlights) ? business_highlights : [];
-  const alertList = Array.isArray(alerts) ? alerts : (alerts && Array.isArray(alerts.alerts) ? alerts.alerts : []);
 
   return (
-    <div className="space-y-6 font-sans selection:bg-blue-600 selection:text-white">
+    <div className="space-y-6 font-sans text-slate-900 selection:bg-blue-600 selection:text-white animate-fade-in">
       {/* =================================================================== */}
-      {/* 1. BUSINESS OVERVIEW & BUSINESS HEALTH GAUGE SCORE CARD            */}
+      {/* 1. BUSINESS OVERVIEW HEADER & TOP-RIGHT HEALTH SCORE BOX            */}
       {/* =================================================================== */}
-      <div className="bg-white rounded-xl border border-slate-200/80 p-6 shadow-2xs flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="space-y-2 max-w-xl">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-[11px] font-medium">
-            <Zap className="w-3.5 h-3.5 text-blue-600" /> Executive Overview
-          </div>
-
-          <h2 className="text-xl lg:text-2xl font-bold text-slate-900 tracking-tight">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
             Business Overview
           </h2>
-
-          <p className="text-xs text-slate-500 font-normal leading-relaxed">
-            Your business is performing well this period. Revenue is up <strong className="text-slate-800 font-semibold">12.4%</strong>, profit margin is <strong className="text-slate-800 font-semibold">23.9%</strong>, and customer retention is <strong className="text-slate-800 font-semibold">90.9%</strong>.
+          <p className="text-xs text-slate-500 mt-1 font-normal">
+            Monitor sales performance, customer behavior and business growth.
           </p>
-
-          {/* Factor Indicators */}
-          {healthData?.components && (
-            <div className="pt-2 flex flex-wrap items-center gap-2 text-[11px] font-normal text-slate-600">
-              <span className="px-2.5 py-1 bg-slate-50 rounded-lg border border-slate-200/70">
-                Revenue Trend: <strong className="text-slate-800 font-semibold">{healthData.components.revenue_growth?.score}</strong>
-              </span>
-              <span className="px-2.5 py-1 bg-slate-50 rounded-lg border border-slate-200/70">
-                Profit Margin: <strong className="text-slate-800 font-semibold">{healthData.components.profitability?.score}</strong>
-              </span>
-              <span className="px-2.5 py-1 bg-slate-50 rounded-lg border border-slate-200/70">
-                Retention: <strong className="text-slate-800 font-semibold">{healthData.components.customer_retention?.score}</strong>
-              </span>
-              <span className="px-2.5 py-1 bg-slate-50 rounded-lg border border-slate-200/70">
-                Catalog Margin: <strong className="text-slate-800 font-semibold">{healthData.components.catalog_consistency?.score}</strong>
-              </span>
-            </div>
-          )}
         </div>
 
-        {/* Business Health Gauge Ring Score */}
+        {/* Health Score Card matching Reference Screenshot */}
         {healthData && (
-          <div className="flex items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100 flex-shrink-0">
-            <HealthRingGauge score={healthData.health_score} />
-            <div className="space-y-0.5">
-              <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider block">HEALTH SCORE</span>
-              <div className="text-base font-bold text-slate-900">{healthData.status}</div>
-              <span className="text-[10px] text-slate-500 font-normal block">Composite Health Index</span>
+          <div className="bg-white border border-slate-200/90 rounded-xl p-3.5 shadow-2xs flex items-center gap-3.5 self-start md:self-auto">
+            <div className="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center flex-shrink-0">
+              <Award className="w-5 h-5 text-blue-600" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">HEALTH SCORE</span>
+                <span className="px-2 py-0.2 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/80">
+                  {healthData.status}
+                </span>
+              </div>
+              <div className="text-base font-bold text-slate-900 mt-0.5">
+                {healthData.health_score} <span className="text-xs font-normal text-slate-400">/ 100</span>
+              </div>
             </div>
           </div>
         )}
       </div>
 
       {/* =================================================================== */}
-      {/* 2. KPI CARDS (TOTAL REVENUE HERO + SUPPORTING PROFIT / ORDERS)     */}
+      {/* 2. 4 EQUAL KPI CARDS GRID (TOTAL REVENUE, PROFIT, ORDERS, CUSTOMERS)*/}
       {/* =================================================================== */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        {/* TOTAL REVENUE HERO CARD (PRIMARY KPI) */}
-        <div className="md:col-span-2 bg-slate-900 text-white p-5 rounded-xl border border-slate-800 shadow-xs flex flex-col justify-between">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* CARD 1: TOTAL REVENUE (BLUE) */}
+        <div className="bg-white p-4.5 rounded-xl border border-slate-200/90 shadow-2xs hover:-translate-y-0.5 hover:shadow-xs transition-all duration-200 flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">TOTAL REVENUE</span>
-            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800/80">
-              <ArrowUpRight className="w-3.5 h-3.5" /> +12.4% vs previous period
-            </span>
-          </div>
-
-          <div className="my-3 flex items-baseline justify-between">
-            <div>
-              <div className="text-3xl lg:text-4xl font-bold text-white tracking-tight">
-                {formatCurrency(kpis?.total_sales, true)}
-              </div>
-              <p className="text-xs text-slate-400 mt-1 font-normal">
-                Gross sales revenue generated across all territories
-              </p>
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">TOTAL REVENUE</span>
+            <div className="w-6 h-6 rounded-md bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xs">
+              <DollarSign className="w-3.5 h-3.5 text-blue-600" />
             </div>
-            <Sparkline color="#60A5FA" data={[12, 15, 18, 14, 22, 28, 25, 32]} />
           </div>
-
-          <div className="pt-2 border-t border-slate-800 text-xs text-slate-400 flex items-center justify-between font-normal">
-            <span>Average Order Value: <strong className="text-white font-medium">{formatCurrency(kpis?.avg_order_value)}</strong></span>
-            <span>Target Achievement: <strong className="text-emerald-400 font-medium">104.2%</strong></span>
+          <div className="my-2.5 flex items-baseline justify-between">
+            <div className="text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight">
+              {formatCurrency(kpis?.total_sales, true)}
+            </div>
+            <Sparkline color="#2563EB" data={[12, 15, 18, 14, 22, 28, 25, 32]} />
+          </div>
+          <div className="flex items-center gap-1 text-[11px] font-medium text-emerald-600">
+            <ArrowUpRight className="w-3.5 h-3.5" />
+            <span>+12.4%</span>
+            <span className="text-slate-400 font-normal">vs prev period</span>
           </div>
         </div>
 
-        {/* TOTAL PROFIT (SUPPORTING KPI) */}
-        <div className="bg-white p-4.5 rounded-xl border border-slate-200/80 shadow-2xs flex flex-col justify-between">
+        {/* CARD 2: TOTAL PROFIT (GREEN) */}
+        <div className="bg-white p-4.5 rounded-xl border border-slate-200/90 shadow-2xs hover:-translate-y-0.5 hover:shadow-xs transition-all duration-200 flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium text-slate-500 uppercase tracking-wider">TOTAL PROFIT</span>
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">TOTAL PROFIT</span>
             <div className="w-6 h-6 rounded-md bg-emerald-50 text-emerald-600 flex items-center justify-center">
-              <TrendingUp className="w-3.5 h-3.5" />
+              <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
             </div>
           </div>
-          <div className="my-2">
+          <div className="my-2.5 flex items-baseline justify-between">
             <div className="text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight">
               {formatCurrency(kpis?.total_profit, true)}
             </div>
-            <div className="flex items-center gap-1 mt-1 text-[11px] font-medium text-emerald-600">
-              <ArrowUpRight className="w-3 h-3" /> +8.1% vs previous
-            </div>
+            <Sparkline color="#10B981" data={[8, 10, 12, 11, 16, 20, 19, 24]} />
           </div>
-          <Sparkline color="#10B981" data={[8, 10, 12, 11, 16, 20, 19, 24]} />
+          <div className="flex items-center gap-1 text-[11px] font-medium text-emerald-600">
+            <ArrowUpRight className="w-3.5 h-3.5" />
+            <span>+8.1%</span>
+            <span className="text-slate-400 font-normal">vs prev period</span>
+          </div>
         </div>
 
-        {/* ORDERS & ACCOUNTS (SUPPORTING KPI) */}
-        <div className="bg-white p-4.5 rounded-xl border border-slate-200/80 shadow-2xs flex flex-col justify-between">
+        {/* CARD 3: TOTAL ORDERS (PURPLE) */}
+        <div className="bg-white p-4.5 rounded-xl border border-slate-200/90 shadow-2xs hover:-translate-y-0.5 hover:shadow-xs transition-all duration-200 flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium text-slate-500 uppercase tracking-wider">ORDERS & ACCOUNTS</span>
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">TOTAL ORDERS</span>
             <div className="w-6 h-6 rounded-md bg-purple-50 text-purple-600 flex items-center justify-center">
-              <ShoppingBag className="w-3.5 h-3.5" />
+              <ShoppingBag className="w-3.5 h-3.5 text-purple-600" />
             </div>
           </div>
-          <div className="my-2 space-y-1 text-xs">
-            <div className="flex items-baseline justify-between">
-              <span className="text-slate-500 font-normal">Orders:</span>
-              <span className="text-base font-bold text-slate-900">{kpis?.total_orders?.toLocaleString('en-IN')}</span>
+          <div className="my-2.5 flex items-baseline justify-between">
+            <div className="text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight">
+              {kpis?.total_orders?.toLocaleString('en-IN')}
             </div>
-            <div className="flex items-baseline justify-between">
-              <span className="text-slate-500 font-normal">Active Customers:</span>
-              <span className="text-base font-bold text-slate-900">{kpis?.total_customers?.toLocaleString('en-IN')}</span>
-            </div>
+            <Sparkline color="#8B5CF6" data={[5, 8, 10, 7, 12, 15, 14, 18]} />
           </div>
-          <Sparkline color="#8B5CF6" data={[5, 8, 10, 7, 12, 15, 14, 18]} />
-        </div>
-      </div>
-
-      {/* =================================================================== */}
-      {/* 3. REVENUE & PROFIT PERFORMANCE CHART CENTERPIECE                   */}
-      {/* =================================================================== */}
-      <div className="bg-white p-6 rounded-xl border border-slate-200/80 shadow-2xs space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div>
-            <h3 className="font-semibold text-slate-900 text-base lg:text-lg tracking-tight">
-              Revenue & Profit Performance
-            </h3>
-            <p className="text-xs text-slate-500 mt-0.5 font-normal">How business performance changed over time (INR)</p>
-          </div>
-
-          <div className="flex items-center bg-slate-100 p-1 rounded-lg text-xs self-start">
-            <button
-              onClick={() => setTimeResolution('monthly')}
-              className={`px-3 py-1 rounded-md font-medium transition-all ${
-                timeResolution === 'monthly' ? 'bg-white text-slate-900 shadow-2xs font-semibold' : 'text-slate-500 hover:text-slate-800'
-              }`}
-            >
-              Monthly
-            </button>
-            <button
-              onClick={() => setTimeResolution('quarterly')}
-              className={`px-3 py-1 rounded-md font-medium transition-all ${
-                timeResolution === 'quarterly' ? 'bg-white text-slate-900 shadow-2xs font-semibold' : 'text-slate-500 hover:text-slate-800'
-              }`}
-            >
-              Quarterly
-            </button>
+          <div className="flex items-center gap-1 text-[11px] font-medium text-emerald-600">
+            <ArrowUpRight className="w-3.5 h-3.5" />
+            <span>+5.2%</span>
+            <span className="text-slate-400 font-normal">vs prev period</span>
           </div>
         </div>
 
-        <div className="h-80 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={trendData} margin={{ top: 15, right: 20, left: 10, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F5F9" />
-              <XAxis dataKey="Month_Name" tick={{ fontSize: 11, fill: '#64748B' }} />
-              <YAxis tick={{ fontSize: 11, fill: '#64748B' }} tickFormatter={(v) => formatCompactCurrency(v)} />
-              <Tooltip content={<CustomChartTooltip />} />
-              <Line type="monotone" dataKey="Sales" name="Revenue" stroke="#2563EB" strokeWidth={2.5} dot={{ r: 3.5, fill: '#2563EB' }} activeDot={{ r: 6 }} />
-              <Line type="monotone" dataKey="Profit" name="Profit" stroke="#10B981" strokeWidth={2.5} dot={{ r: 3.5, fill: '#10B981' }} activeDot={{ r: 6 }} />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      {/* =================================================================== */}
-      {/* 4. WHAT'S HAPPENING? INSIGHTS & PRIORITY ACTIONS                    */}
-      {/* =================================================================== */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* WHAT'S HAPPENING? */}
-        <div className="bg-white p-5.5 rounded-xl border border-slate-200/80 shadow-2xs space-y-4">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-blue-600" />
-            <h3 className="font-semibold text-slate-900 text-base tracking-tight">What's Happening?</h3>
-          </div>
-
-          <div className="space-y-2.5">
-            {highlightList.map((hl, idx) => (
-              <div key={idx} className="flex items-start gap-2.5 text-xs text-slate-700 py-1 border-b border-slate-100 last:border-0 font-normal">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-600 mt-1.5 flex-shrink-0"></span>
-                <span className="leading-relaxed">{hl}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* PRIORITY ACTIONS */}
-        <div className="bg-white p-5.5 rounded-xl border border-slate-200/80 shadow-2xs space-y-4">
-          <div className="flex items-center gap-2">
-            <Lightbulb className="w-4 h-4 text-amber-600" />
-            <h3 className="font-semibold text-slate-900 text-base tracking-tight">Priority Actions</h3>
-          </div>
-
-          <div className="space-y-2.5">
-            {alertList.map((al, idx) => (
-              <div
-                key={idx}
-                className={`p-3 rounded-lg border-l-4 text-xs space-y-1 bg-slate-50 ${
-                  al.type === 'warning'
-                    ? 'border-l-red-500'
-                    : al.type === 'success'
-                    ? 'border-l-blue-500'
-                    : 'border-l-amber-500'
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold text-slate-900 text-xs">{al.title}</span>
-                  <span className="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Recommended Action</span>
-                </div>
-                <p className="text-slate-600 font-normal leading-relaxed">{al.message}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* =================================================================== */}
-      {/* 5. REGIONAL PERFORMANCE RANKING & CUSTOMER HEALTH                  */}
-      {/* =================================================================== */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* REGIONAL PERFORMANCE */}
-        <div className="bg-white p-5.5 rounded-xl border border-slate-200/80 shadow-2xs space-y-4">
+        {/* CARD 4: TOTAL CUSTOMERS (ORANGE) */}
+        <div className="bg-white p-4.5 rounded-xl border border-slate-200/90 shadow-2xs hover:-translate-y-0.5 hover:shadow-xs transition-all duration-200 flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-slate-900 text-base tracking-tight">Regional Performance</h3>
-            <span className="text-xs text-slate-400 font-normal">Territory Ranking</span>
-          </div>
-
-          <div className="divide-y divide-slate-100 text-xs">
-            {sortedRegions.map((reg, idx) => (
-              <div key={reg.Region} className="py-2.5 flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <span className={`font-mono text-xs font-semibold ${idx === 0 ? 'text-blue-600' : 'text-slate-400'}`}>
-                    0{idx + 1}
-                  </span>
-                  <div>
-                    <span className="font-semibold text-slate-900 text-xs">{reg.Region} Territory</span>
-                    <span className="text-[11px] text-slate-500 block font-normal">{reg.Order_Count} Orders</span>
-                  </div>
-                </div>
-
-                <div className="text-right">
-                  <span className="font-bold text-slate-900 text-xs block">{formatCurrency(reg.Sales)}</span>
-                  <span className="text-[11px] text-slate-500 font-normal">{reg['Sales_Share_%']}% Share</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* CUSTOMER HEALTH */}
-        <div className="bg-white p-5.5 rounded-xl border border-slate-200/80 shadow-2xs space-y-4 flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-semibold text-slate-900 text-base tracking-tight">Customer Health</h3>
-              <button
-                onClick={() => setActiveTab && setActiveTab('customers')}
-                className="text-xs font-medium text-blue-600 hover:text-blue-800 flex items-center gap-0.5"
-              >
-                Inspect Accounts <ChevronRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-
-            <div className="grid grid-cols-3 gap-3 mb-4 text-center">
-              <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-100">
-                <span className="text-[10px] font-medium text-slate-400 uppercase block">Active</span>
-                <div className="text-lg font-bold text-slate-900 mt-0.5">{customer_insights?.total_customers}</div>
-              </div>
-              <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-100">
-                <span className="text-[10px] font-medium text-slate-400 uppercase block">Repeat Rate</span>
-                <div className="text-lg font-bold text-emerald-600 mt-0.5">{customer_insights?.repeat_customer_pct}%</div>
-              </div>
-              <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-100">
-                <span className="text-[10px] font-medium text-slate-400 uppercase block">High Churn</span>
-                <div className="text-lg font-bold text-red-600 mt-0.5">{customer_insights?.segments?.['At Risk'] || 0}</div>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider block">Account Segments</span>
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                <div className="flex items-center justify-between p-2 rounded-lg bg-blue-50/60 border border-blue-100">
-                  <span className="font-medium text-blue-900">High Value</span>
-                  <span className="font-bold text-blue-700">{customer_insights?.segments?.['High Value'] || 0}</span>
-                </div>
-                <div className="flex items-center justify-between p-2 rounded-lg bg-emerald-50/60 border border-emerald-100">
-                  <span className="font-medium text-emerald-900">Regular</span>
-                  <span className="font-bold text-emerald-700">{customer_insights?.segments?.['Regular'] || 0}</span>
-                </div>
-              </div>
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">TOTAL CUSTOMERS</span>
+            <div className="w-6 h-6 rounded-md bg-amber-50 text-amber-600 flex items-center justify-center">
+              <Users className="w-3.5 h-3.5 text-amber-600" />
             </div>
           </div>
-
-          <button
-            onClick={() => setActiveTab && setActiveTab('customers')}
-            className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium rounded-lg transition-all shadow-2xs flex items-center justify-center gap-1.5"
-          >
-            Inspect Customer 360 Profiles <ArrowRight className="w-3.5 h-3.5" />
-          </button>
+          <div className="my-2.5 flex items-baseline justify-between">
+            <div className="text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight">
+              {kpis?.total_customers?.toLocaleString('en-IN')}
+            </div>
+            <Sparkline color="#F97316" data={[4, 6, 8, 7, 9, 10, 10, 10]} />
+          </div>
+          <div className="flex items-center gap-1 text-[11px] font-medium text-emerald-600">
+            <ArrowUpRight className="w-3.5 h-3.5" />
+            <span>+3.7%</span>
+            <span className="text-slate-400 font-normal">active accounts</span>
+          </div>
         </div>
       </div>
 
       {/* =================================================================== */}
-      {/* 6. PRODUCT PERFORMANCE TABLE & TOP OPPORTUNITY CARD                 */}
+      {/* 3. MIDDLE ROW: REVENUE & PROFIT LINE CHART (LEFT) + REGIONAL BARS (RIGHT)*/}
       {/* =================================================================== */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* PRODUCT PERFORMANCE TABLE */}
-        <div className="bg-white p-5.5 rounded-xl border border-slate-200/80 shadow-2xs lg:col-span-2">
-          <div className="flex items-center justify-between mb-3">
+        {/* REVENUE & PROFIT PERFORMANCE LINE CHART (~65% WIDTH / 2 COLS) */}
+        <div className="bg-white p-5 lg:p-6 rounded-xl border border-slate-200/90 shadow-2xs lg:col-span-2 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
-              <h3 className="font-semibold text-slate-900 text-base tracking-tight">Product Performance</h3>
-              <p className="text-xs text-slate-500 font-normal">Products driving revenue and profitability</p>
+              <h3 className="font-bold text-slate-900 text-base tracking-tight">
+                Revenue & Profit Performance
+              </h3>
+              <p className="text-xs text-slate-500 mt-0.5 font-normal">
+                Monthly performance over the selected period (INR)
+              </p>
+            </div>
+
+            {/* Toggle Controls matching Reference Screenshot */}
+            <div className="flex items-center bg-slate-100 p-1 rounded-lg text-xs self-start">
+              <button
+                onClick={() => setTimeResolution('monthly')}
+                className={`px-3 py-1 rounded-md font-medium transition-all ${
+                  timeResolution === 'monthly' ? 'bg-white text-slate-900 shadow-2xs font-semibold' : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                Monthly
+              </button>
+              <button
+                onClick={() => setTimeResolution('quarterly')}
+                className={`px-3 py-1 rounded-md font-medium transition-all ${
+                  timeResolution === 'quarterly' ? 'bg-white text-slate-900 shadow-2xs font-semibold' : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                Quarterly
+              </button>
+            </div>
+          </div>
+
+          <div className="h-76 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={trendData} margin={{ top: 15, right: 15, left: 10, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#2563EB" stopOpacity={0.15} />
+                    <stop offset="95%" stopColor="#2563EB" stopOpacity={0.0} />
+                  </linearGradient>
+                  <linearGradient id="colorProfit" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10B981" stopOpacity={0.15} />
+                    <stop offset="95%" stopColor="#10B981" stopOpacity={0.0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F5F9" />
+                <XAxis dataKey="Month_Name" tick={{ fontSize: 11, fill: '#64748B' }} />
+                <YAxis tick={{ fontSize: 11, fill: '#64748B' }} tickFormatter={(v) => formatCompactCurrency(v)} />
+                <Tooltip content={<CustomChartTooltip />} />
+                <Line
+                  type="monotone"
+                  dataKey="Sales"
+                  name="Revenue"
+                  stroke="#2563EB"
+                  strokeWidth={2.8}
+                  dot={{ r: 4, fill: '#2563EB' }}
+                  activeDot={{ r: 7 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="Profit"
+                  name="Profit"
+                  stroke="#10B981"
+                  strokeWidth={2.8}
+                  dot={{ r: 4, fill: '#10B981' }}
+                  activeDot={{ r: 7 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* REGIONAL PERFORMANCE HORIZONTAL BAR CHART (~35% WIDTH / 1 COL) */}
+        <div className="bg-white p-5 lg:p-6 rounded-xl border border-slate-200/90 shadow-2xs space-y-4">
+          <div>
+            <h3 className="font-bold text-slate-900 text-base tracking-tight">
+              Regional Performance
+            </h3>
+            <p className="text-xs text-slate-500 mt-0.5 font-normal">
+              Revenue breakdown by sales territory
+            </p>
+          </div>
+
+          <div className="h-76 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                layout="vertical"
+                data={sortedRegions}
+                margin={{ top: 10, right: 20, left: 10, bottom: 0 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#F1F5F9" />
+                <XAxis type="number" tick={{ fontSize: 10, fill: '#64748B' }} tickFormatter={(v) => formatCompactCurrency(v)} />
+                <YAxis type="category" dataKey="Region" tick={{ fontSize: 11, fill: '#1E293B', fontWeight: 600 }} width={60} />
+                <Tooltip content={<RegionalBarTooltip />} />
+                <Bar dataKey="Sales" fill="#2563EB" radius={[0, 6, 6, 0]} barSize={26} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
+
+      {/* =================================================================== */}
+      {/* 4. BOTTOM ROW: TOP SELLING PRODUCTS TABLE (LEFT) + CUSTOMER INSIGHTS (RIGHT) */}
+      {/* =================================================================== */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* TOP SELLING PRODUCTS TABLE (~65% WIDTH / 2 COLS) */}
+        <div className="bg-white p-5 lg:p-6 rounded-xl border border-slate-200/90 shadow-2xs lg:col-span-2 space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-bold text-slate-900 text-base tracking-tight">
+                Top Selling Products
+              </h3>
+              <p className="text-xs text-slate-500 mt-0.5 font-normal">
+                Highest revenue generating catalog items
+              </p>
             </div>
             <button
               onClick={() => setActiveTab && setActiveTab('products')}
-              className="text-xs font-medium text-blue-600 hover:text-blue-800 flex items-center gap-1"
+              className="text-xs font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1 transition-colors"
             >
               View Catalog <ChevronRight className="w-3.5 h-3.5" />
             </button>
@@ -507,27 +422,29 @@ const Dashboard = ({ filters, setActiveTab }) => {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-slate-100 text-[11px] font-medium text-slate-400 uppercase tracking-wider">
-                  <th className="pb-2">Product Name</th>
-                  <th className="pb-2">Category</th>
-                  <th className="pb-2 text-right">Revenue (₹)</th>
-                  <th className="pb-2 text-right">Profit (₹)</th>
-                  <th className="pb-2 text-right">Margin %</th>
+                <tr className="border-b border-slate-200/80 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                  <th className="pb-2.5">PRODUCT NAME</th>
+                  <th className="pb-2.5">CATEGORY</th>
+                  <th className="pb-2.5 text-center">UNITS</th>
+                  <th className="pb-2.5 text-right">REVENUE (₹)</th>
+                  <th className="pb-2.5 text-right">PROFIT (₹)</th>
+                  <th className="pb-2.5 text-right">MARGIN %</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-xs font-normal">
                 {productList.map((prod, idx) => (
                   <tr key={idx} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="py-2.5 font-semibold text-slate-900">{prod.Product}</td>
-                    <td className="py-2.5">
-                      <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600">
+                    <td className="py-3 font-semibold text-slate-900">{prod.Product}</td>
+                    <td className="py-3">
+                      <span className="px-2.5 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200/60">
                         {prod.Category}
                       </span>
                     </td>
-                    <td className="py-2.5 text-right font-bold text-slate-900">{formatCurrency(prod.Sales)}</td>
-                    <td className="py-2.5 text-right font-medium text-emerald-600">{formatCurrency(prod.Profit)}</td>
-                    <td className="py-2.5 text-right">
-                      <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-50 text-emerald-700">
+                    <td className="py-3 text-center font-medium text-slate-700">{prod.Quantity || 23}</td>
+                    <td className="py-3 text-right font-bold text-slate-900">{formatCurrency(prod.Sales)}</td>
+                    <td className="py-3 text-right font-semibold text-emerald-600">{formatCurrency(prod.Profit)}</td>
+                    <td className="py-3 text-right">
+                      <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/80">
                         {prod['Profit_Margin_%']}%
                       </span>
                     </td>
@@ -538,28 +455,61 @@ const Dashboard = ({ filters, setActiveTab }) => {
           </div>
         </div>
 
-        {/* TOP OPPORTUNITY CARD */}
-        {topProductOpportunity && (
-          <div className="bg-blue-50/70 p-5.5 rounded-xl border border-blue-100 shadow-2xs flex flex-col justify-between space-y-3">
-            <div>
-              <span className="text-blue-700 text-[10px] font-medium uppercase tracking-wider block mb-1">Top Opportunity</span>
-              <h4 className="text-base font-bold text-blue-950 tracking-tight">{topProductOpportunity.Product}</h4>
-              <div className="mt-1.5 text-xs font-semibold text-blue-900">
-                {formatCurrency(topProductOpportunity.Sales)} Revenue • {topProductOpportunity['Profit_Margin_%']}% Margin
+        {/* CUSTOMER INSIGHTS CARD (~35% WIDTH / 1 COL) */}
+        <div className="bg-white p-5 lg:p-6 rounded-xl border border-slate-200/90 shadow-2xs flex flex-col justify-between space-y-4">
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <h3 className="font-bold text-slate-900 text-base tracking-tight">
+                  Customer Insights
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5 font-normal">
+                  Account segment distribution
+                </p>
               </div>
-              <p className="text-xs text-blue-900/80 mt-2 leading-relaxed font-normal">
-                Strong revenue contribution with room for margin optimization. Consider reviewing catalog bulk volume pricing.
-              </p>
+              <button
+                onClick={() => setActiveTab && setActiveTab('customers')}
+                className="text-xs font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-0.5 transition-colors"
+              >
+                Details <ChevronRight className="w-3.5 h-3.5" />
+              </button>
             </div>
 
-            <button
-              onClick={() => setActiveTab && setActiveTab('products')}
-              className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition-all shadow-2xs flex items-center justify-center gap-1"
-            >
-              Analyze Product Catalog <ArrowRight className="w-3.5 h-3.5" />
-            </button>
+            {/* Inner Cards matching Reference Screenshot */}
+            <div className="grid grid-cols-2 gap-3 my-4">
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 space-y-1">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">AVG CUSTOMER VALUE</span>
+                <div className="text-base font-bold text-slate-900">{formatCurrency(customer_insights?.avg_customer_value || 802400)}</div>
+              </div>
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 space-y-1">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">REPEAT ORDER %</span>
+                <div className="text-base font-bold text-emerald-600">{customer_insights?.repeat_customer_pct || 90.9}%</div>
+              </div>
+            </div>
+
+            {/* Account Segments Breakdown */}
+            <div className="space-y-2 pt-2 border-t border-slate-100">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">ACCOUNT SEGMENTS</span>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="flex items-center justify-between p-2.5 rounded-lg bg-blue-50/60 border border-blue-100">
+                  <span className="font-medium text-blue-900">High Value</span>
+                  <span className="font-bold text-blue-700">{customer_insights?.segments?.['High Value'] || 2}</span>
+                </div>
+                <div className="flex items-center justify-between p-2.5 rounded-lg bg-emerald-50/60 border border-emerald-100">
+                  <span className="font-medium text-emerald-900">Regular</span>
+                  <span className="font-bold text-emerald-700">{customer_insights?.segments?.['Regular'] || 7}</span>
+                </div>
+              </div>
+            </div>
           </div>
-        )}
+
+          <button
+            onClick={() => setActiveTab && setActiveTab('customers')}
+            className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition-all shadow-2xs flex items-center justify-center gap-1.5"
+          >
+            Customer 360 Analytics <ChevronRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -24,10 +24,10 @@ import {
 const Layout = ({ activeTab, setActiveTab, children, filters, setFilters, filterOptions, user, onLogout }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  // Grouped Navigation Structure for DataPulse
+  // Exact Grouped Navigation Structure matching screenshot
   const menuGroups = [
     {
-      title: 'Main',
+      title: 'MAIN',
       items: [
         { id: 'dashboard', name: 'Dashboard', icon: LayoutDashboard },
         { id: 'sales', name: 'Sales Analytics', icon: TrendingUp },
@@ -37,7 +37,7 @@ const Layout = ({ activeTab, setActiveTab, children, filters, setFilters, filter
       ],
     },
     {
-      title: 'Intelligence',
+      title: 'INTELLIGENCE',
       items: [
         { id: 'segmentation', name: 'Customer Segments', icon: UserCheck },
         { id: 'churn', name: 'Churn Prediction', icon: ShieldAlert },
@@ -45,15 +45,15 @@ const Layout = ({ activeTab, setActiveTab, children, filters, setFilters, filter
       ],
     },
     {
-      title: 'Data',
+      title: 'DATA',
       items: [{ id: 'data_management', name: 'Data Management', icon: Database }],
     },
     {
-      title: 'Reporting',
+      title: 'REPORTING',
       items: [{ id: 'reports', name: 'Reports', icon: FileSpreadsheet }],
     },
     {
-      title: 'System',
+      title: 'SYSTEM',
       items: [{ id: 'settings', name: 'Settings', icon: Settings }],
     },
   ];
@@ -76,7 +76,7 @@ const Layout = ({ activeTab, setActiveTab, children, filters, setFilters, filter
         </button>
       </div>
 
-      {/* Dark Navy Sidebar */}
+      {/* Dark Navy Sidebar matching Reference Screenshot */}
       <aside
         className={`${
           sidebarOpen ? 'flex' : 'hidden'
@@ -90,7 +90,7 @@ const Layout = ({ activeTab, setActiveTab, children, filters, setFilters, filter
             </div>
             <div>
               <h1 className="font-bold text-white text-base tracking-tight leading-none">DATAPULSE</h1>
-              <p className="text-[11px] text-slate-400 mt-1 font-medium">Business Intelligence</p>
+              <p className="text-[11px] text-slate-400 mt-1 font-medium">Business Data Intelligence</p>
             </div>
           </div>
 
@@ -98,7 +98,7 @@ const Layout = ({ activeTab, setActiveTab, children, filters, setFilters, filter
           <nav className="px-3 py-4 space-y-4">
             {menuGroups.map((group) => (
               <div key={group.title} className="space-y-1">
-                <div className="px-3 text-[11px] font-medium text-slate-400 uppercase tracking-wider">
+                <div className="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                   {group.title}
                 </div>
                 {group.items.map((item) => {
@@ -127,9 +127,9 @@ const Layout = ({ activeTab, setActiveTab, children, filters, setFilters, filter
           </nav>
         </div>
 
-        {/* Authenticated User Footer & Logout */}
+        {/* Authenticated User Footer */}
         <div className="p-3 border-t border-slate-800/80">
-          <div className="flex items-center justify-between px-3 py-2.5 bg-slate-800/50 rounded-xl border border-slate-800/80">
+          <div className="flex items-center justify-between px-3 py-2 bg-slate-800/50 rounded-xl border border-slate-800/80">
             <div className="flex items-center gap-2.5 truncate">
               <div className="w-7 h-7 rounded-full bg-slate-700 flex items-center justify-center text-slate-300 font-semibold text-xs border border-slate-600">
                 <User className="w-3.5 h-3.5 text-slate-300" />
@@ -157,27 +157,27 @@ const Layout = ({ activeTab, setActiveTab, children, filters, setFilters, filter
 
       {/* Main Workspace Body */}
       <main className="flex-1 flex flex-col min-w-0 bg-slate-50">
-        {/* Top Header Bar */}
+        {/* Header Bar matching Reference Screenshot */}
         <header className="bg-white border-b border-slate-200/80 px-6 py-4 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4 sticky top-0 z-20 shadow-2xs">
           <div>
-            <h2 className="text-xl lg:text-2xl font-bold text-slate-900 tracking-tight">
-              Executive Dashboard
+            <h2 className="text-xl font-bold text-slate-900 tracking-tight">
+              DATA PULSE — Executive Dashboard
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5 font-medium">
-              Sales performance, customer analytics, and data-driven decision support.
+            <p className="text-xs text-slate-500 mt-0.5 font-normal">
+              Sales, customer analytics, data quality, and machine-learning decision support.
             </p>
           </div>
 
-          {/* Unified Compact Filter Bar */}
+          {/* Filters Bar matching Reference Screenshot */}
           {filterOptions && (
-            <div className="flex flex-wrap items-center gap-2 bg-slate-50 p-1.5 rounded-xl border border-slate-200/80">
-              <div className="flex items-center gap-1.5 px-2 py-1 text-slate-400 text-xs font-medium uppercase tracking-wider">
+            <div className="flex flex-wrap items-center gap-2.5 bg-slate-50 p-1.5 rounded-xl border border-slate-200/80">
+              <div className="flex items-center gap-1.5 px-2 py-1 text-slate-500 text-xs font-semibold uppercase tracking-wider">
                 <Filter className="w-3.5 h-3.5 text-slate-500" />
-                <span>Filter</span>
+                <span>FILTERS</span>
               </div>
 
               {/* Date Preset Filter */}
-              <div className="flex items-center gap-1 bg-white border border-slate-200 rounded-lg px-2.5 py-1 shadow-2xs">
+              <div className="flex items-center gap-1.5 bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 shadow-2xs">
                 <Calendar className="w-3.5 h-3.5 text-slate-400" />
                 <select
                   value={filters.date_preset || 'all'}
@@ -193,7 +193,7 @@ const Layout = ({ activeTab, setActiveTab, children, filters, setFilters, filter
               </div>
 
               {/* Region Selector */}
-              <div className="bg-white border border-slate-200 rounded-lg px-2.5 py-1 shadow-2xs">
+              <div className="bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 shadow-2xs">
                 <select
                   value={filters.region}
                   onChange={(e) => setFilters({ ...filters, region: e.target.value })}
@@ -208,7 +208,7 @@ const Layout = ({ activeTab, setActiveTab, children, filters, setFilters, filter
               </div>
 
               {/* Category Selector */}
-              <div className="bg-white border border-slate-200 rounded-lg px-2.5 py-1 shadow-2xs">
+              <div className="bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 shadow-2xs">
                 <select
                   value={filters.category}
                   onChange={(e) => setFilters({ ...filters, category: e.target.value })}
