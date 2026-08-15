@@ -353,7 +353,7 @@ const Dashboard = ({ filters, setActiveTab }) => {
             </div>
           </div>
 
-          <div className="h-76 w-full">
+          <div className="h-80 w-full min-h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={trendData} margin={{ top: 15, right: 15, left: 10, bottom: 0 }}>
                 <defs>
@@ -404,7 +404,7 @@ const Dashboard = ({ filters, setActiveTab }) => {
             </p>
           </div>
 
-          <div className="h-76 w-full">
+          <div className="h-80 w-full min-h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 layout="vertical"
