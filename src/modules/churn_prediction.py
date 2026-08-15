@@ -151,10 +151,14 @@ def train_churn_model(
 
 
 def compare_churn_models(df: pd.DataFrame, recency_threshold_days: int = 90) -> dict:
-    """Compares Logistic Regression vs Random Forest Classifier side-by-side for churn prediction."""
+    """Compares Logistic Regression vs Random Forest Classifier side-by-side for churn prediction using train/test evaluation."""
     churn_data = build_churn_features(df, recency_threshold_days=recency_threshold_days)
     if churn_data.empty or len(churn_data) < 2:
-        return {}
+        return {
+            "error": "Model evaluation requires sufficient examples of customer transactions.",
+            "comparison_table": [],
+            "selected_model": "None",
+        }
 
     feature_cols = ["Recency_Days", "Order_Count", "Total_Spending", "Avg_Order_Value", "Avg_Profit_Margin"]
     X = churn_data[feature_cols].copy()
@@ -163,53 +167,85 @@ def compare_churn_models(df: pd.DataFrame, recency_threshold_days: int = 90) -> 
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
 
+    unique_classes = np.unique(y)
+    if len(unique_classes) < 2:
+        X_train_scaled, X_test_scaled, y_train, y_test = X_scaled, X_scaled, y, y
+    else:
+        from sklearn.model_selection import train_test_split
+        try:
+            X_tr, X_te, y_tr, y_te = train_test_split(
+                X, y, test_size=0.3, random_state=42
+            )
+            if len(np.unique(y_tr)) < 2:
+                X_train_scaled, X_test_scaled, y_train, y_test = X_scaled, X_scaled, y, y
+            else:
+                X_train_scaled = scaler.fit_transform(X_tr)
+                X_test_scaled = scaler.transform(X_te)
+                y_train, y_test = y_tr, y_te
+        except Exception:
+            X_train_scaled, X_test_scaled, y_train, y_test = X_scaled, X_scaled, y, y
+
     # 1. Logistic Regression
     lr = LogisticRegression(random_state=42, max_iter=1000)
-    lr.fit(X_scaled, y)
-    y_pred_lr = lr.predict(X_scaled)
+    lr.fit(X_train_scaled, y_train)
+    y_pred_lr = lr.predict(X_test_scaled)
 
-    lr_acc = round(float(accuracy_score(y, y_pred_lr)), 3)
-    lr_prec = round(float(precision_score(y, y_pred_lr, zero_division=0)), 3)
-    lr_rec = round(float(recall_score(y, y_pred_lr, zero_division=0)), 3)
-    lr_f1 = round(float(f1_score(y, y_pred_lr, zero_division=0)), 3)
+    lr_acc = round(float(accuracy_score(y_test, y_pred_lr)), 3)
+    lr_prec = round(float(precision_score(y_test, y_pred_lr, zero_division=0)), 3)
+    lr_rec = round(float(recall_score(y_test, y_pred_lr, zero_division=0)), 3)
+    lr_f1 = round(float(f1_score(y_test, y_pred_lr, zero_division=0)), 3)
 
     # 2. Random Forest Classifier
     from sklearn.ensemble import RandomForestClassifier
     rf = RandomForestClassifier(n_estimators=100, random_state=42)
-    rf.fit(X_scaled, y)
-    y_pred_rf = rf.predict(X_scaled)
+    rf.fit(X_train_scaled, y_train)
+    y_pred_rf = rf.predict(X_test_scaled)
 
-    rf_acc = round(float(accuracy_score(y, y_pred_rf)), 3)
-    rf_prec = round(float(precision_score(y, y_pred_rf, zero_division=0)), 3)
-    rf_rec = round(float(recall_score(y, y_pred_rf, zero_division=0)), 3)
-    rf_f1 = round(float(f1_score(y, y_pred_rf, zero_division=0)), 3)
+    rf_acc = round(float(accuracy_score(y_test, y_pred_rf)), 3)
+    rf_prec = round(float(precision_score(y_test, y_pred_rf, zero_division=0)), 3)
+    rf_rec = round(float(recall_score(y_test, y_pred_rf, zero_division=0)), 3)
+    rf_f1 = round(float(f1_score(y_test, y_pred_rf, zero_division=0)), 3)
+
+    best_model_name = "Random Forest Classifier" if rf_f1 >= lr_f1 else "Logistic Regression"
 
     models_comparison = [
         {
-            "model_name": "Logistic Regression (Baseline)",
+            "Algorithm": "Logistic Regression",
+            "model_name": "Logistic Regression",
+            "Accuracy": lr_acc,
             "accuracy": lr_acc,
+            "Precision": lr_prec,
             "precision": lr_prec,
+            "Recall": lr_rec,
             "recall": lr_rec,
+            "F1_Score": lr_f1,
             "f1_score": lr_f1,
+            "Status": "Selected" if best_model_name == "Logistic Regression" else "Available",
+            "status": "Selected" if best_model_name == "Logistic Regression" else "Available",
             "type": "Linear Classifier",
             "explainability": "High (Linear Coefficients)",
         },
         {
+            "Algorithm": "Random Forest Classifier",
             "model_name": "Random Forest Classifier",
+            "Accuracy": rf_acc,
             "accuracy": rf_acc,
+            "Precision": rf_prec,
             "precision": rf_prec,
+            "Recall": rf_rec,
             "recall": rf_rec,
+            "F1_Score": rf_f1,
             "f1_score": rf_f1,
+            "Status": "Selected" if best_model_name == "Random Forest Classifier" else "Available",
+            "status": "Selected" if best_model_name == "Random Forest Classifier" else "Available",
             "type": "Ensemble Trees",
             "explainability": "Moderate (Gini Feature Importance)",
         },
     ]
 
-    best_model = "Random Forest Classifier" if rf_f1 >= lr_f1 else "Logistic Regression (Baseline)"
-
     return {
         "comparison_table": models_comparison,
-        "selected_model": best_model,
+        "selected_model": best_model_name,
         "selection_rationale": "Model selected based on F1-Score to balance Precision and Recall on potential churn class imbalanced distributions.",
     }
 

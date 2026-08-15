@@ -114,20 +114,32 @@ const ChurnML = ({ filters }) => {
               </thead>
               <tbody className="divide-y divide-slate-100 font-medium">
                 {comparison.comparison_table?.map((row, idx) => {
-                  const statusText = String(row?.Status || row?.status || '');
-                  const isSelected = statusText.includes('Selected');
+                  const algoName = row.Algorithm || row.model_name || 'Classification Model';
+                  const acc = row.Accuracy !== undefined ? row.Accuracy : row.accuracy;
+                  const prec = row.Precision !== undefined ? row.Precision : row.precision;
+                  const rec = row.Recall !== undefined ? row.Recall : row.recall;
+                  const f1 = row.F1_Score !== undefined ? row.F1_Score : (row.f1_score !== undefined ? row.f1_score : row['F1-Score']);
+                  
+                  const statusText = String(row?.Status || row?.status || 'Available');
+                  const isSelected = statusText.includes('Selected') || comparison.selected_model === algoName;
+
+                  const formatPct = (val) => {
+                    if (val === undefined || val === null || isNaN(val)) return 'N/A';
+                    return `${(val * 100).toFixed(1)}%`;
+                  };
+
                   return (
                     <tr key={idx} className="hover:bg-slate-50 transition-colors">
-                      <td className="py-2.5 font-bold text-slate-900">{row.Algorithm}</td>
-                      <td className="py-2.5 text-center text-slate-800 font-semibold">{(row.Accuracy * 100).toFixed(1)}%</td>
-                      <td className="py-2.5 text-center text-slate-800 font-semibold">{(row.Precision * 100).toFixed(1)}%</td>
-                      <td className="py-2.5 text-center text-slate-800 font-semibold">{(row.Recall * 100).toFixed(1)}%</td>
-                      <td className="py-2.5 text-center text-blue-600 font-extrabold">{row['F1-Score']}</td>
+                      <td className="py-2.5 font-bold text-slate-900">{algoName}</td>
+                      <td className="py-2.5 text-center text-slate-800 font-semibold">{formatPct(acc)}</td>
+                      <td className="py-2.5 text-center text-slate-800 font-semibold">{formatPct(prec)}</td>
+                      <td className="py-2.5 text-center text-slate-800 font-semibold">{formatPct(rec)}</td>
+                      <td className="py-2.5 text-center text-blue-600 font-extrabold">{formatPct(f1)}</td>
                       <td className="py-2.5 text-center">
                         <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                           isSelected ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-slate-100 text-slate-600'
                         }`}>
-                          {statusText || 'Available'}
+                          {isSelected ? 'Selected' : 'Available'}
                         </span>
                       </td>
                     </tr>
