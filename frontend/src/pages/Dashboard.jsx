@@ -41,7 +41,7 @@ const Sparkline = ({ color = '#2563EB', data = [10, 15, 12, 18, 20, 25, 22, 30] 
   );
 };
 
-// Rich Custom Tooltip Component for Main Line Chart matching screenshot
+// Custom Tooltip Component for Main Line Chart matching screenshot
 const CustomChartTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     const sales = payload.find((p) => p.dataKey === 'Sales')?.value || 0;
@@ -192,11 +192,11 @@ const Dashboard = ({ filters, setActiveTab }) => {
   ]);
 
   return (
-    <div className="space-y-6 font-sans text-slate-900 selection:bg-blue-600 selection:text-white animate-fade-in">
+    <div className="space-y-6 font-sans text-slate-900 selection:bg-blue-600 selection:text-white">
       {/* =================================================================== */}
       {/* 1. BUSINESS OVERVIEW HEADER & TOP-RIGHT HEALTH SCORE BOX            */}
       {/* =================================================================== */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 animate-fade-in transition-all duration-300" style={{ animationDelay: '0ms' }}>
         <div>
           <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
             Business Overview
@@ -208,7 +208,7 @@ const Dashboard = ({ filters, setActiveTab }) => {
 
         {/* Health Score Card matching Reference Screenshot */}
         {healthData && (
-          <div className="bg-white border border-slate-200/90 rounded-xl p-3.5 shadow-2xs flex items-center gap-3.5 self-start md:self-auto">
+          <div className="bg-white border border-slate-200/90 rounded-xl p-3.5 shadow-2xs flex items-center gap-3.5 self-start md:self-auto hover:shadow-xs transition-all duration-200">
             <div className="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center flex-shrink-0">
               <Award className="w-5 h-5 text-blue-600" />
             </div>
@@ -232,7 +232,7 @@ const Dashboard = ({ filters, setActiveTab }) => {
       {/* =================================================================== */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* CARD 1: TOTAL REVENUE (BLUE) */}
-        <div className="bg-white p-4.5 rounded-xl border border-slate-200/90 shadow-2xs hover:-translate-y-0.5 hover:shadow-xs transition-all duration-200 flex flex-col justify-between">
+        <div className="bg-white p-4.5 rounded-xl border border-slate-200/90 shadow-2xs hover:-translate-y-0.5 hover:shadow-xs transition-all duration-200 ease-out flex flex-col justify-between" style={{ animationDelay: '120ms' }}>
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">TOTAL REVENUE</span>
             <div className="w-6 h-6 rounded-md bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xs">
@@ -253,7 +253,7 @@ const Dashboard = ({ filters, setActiveTab }) => {
         </div>
 
         {/* CARD 2: TOTAL PROFIT (GREEN) */}
-        <div className="bg-white p-4.5 rounded-xl border border-slate-200/90 shadow-2xs hover:-translate-y-0.5 hover:shadow-xs transition-all duration-200 flex flex-col justify-between">
+        <div className="bg-white p-4.5 rounded-xl border border-slate-200/90 shadow-2xs hover:-translate-y-0.5 hover:shadow-xs transition-all duration-200 ease-out flex flex-col justify-between" style={{ animationDelay: '160ms' }}>
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">TOTAL PROFIT</span>
             <div className="w-6 h-6 rounded-md bg-emerald-50 text-emerald-600 flex items-center justify-center">
@@ -274,7 +274,7 @@ const Dashboard = ({ filters, setActiveTab }) => {
         </div>
 
         {/* CARD 3: TOTAL ORDERS (PURPLE) */}
-        <div className="bg-white p-4.5 rounded-xl border border-slate-200/90 shadow-2xs hover:-translate-y-0.5 hover:shadow-xs transition-all duration-200 flex flex-col justify-between">
+        <div className="bg-white p-4.5 rounded-xl border border-slate-200/90 shadow-2xs hover:-translate-y-0.5 hover:shadow-xs transition-all duration-200 ease-out flex flex-col justify-between" style={{ animationDelay: '200ms' }}>
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">TOTAL ORDERS</span>
             <div className="w-6 h-6 rounded-md bg-purple-50 text-purple-600 flex items-center justify-center">
@@ -295,7 +295,7 @@ const Dashboard = ({ filters, setActiveTab }) => {
         </div>
 
         {/* CARD 4: TOTAL CUSTOMERS (ORANGE) */}
-        <div className="bg-white p-4.5 rounded-xl border border-slate-200/90 shadow-2xs hover:-translate-y-0.5 hover:shadow-xs transition-all duration-200 flex flex-col justify-between">
+        <div className="bg-white p-4.5 rounded-xl border border-slate-200/90 shadow-2xs hover:-translate-y-0.5 hover:shadow-xs transition-all duration-200 ease-out flex flex-col justify-between" style={{ animationDelay: '240ms' }}>
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">TOTAL CUSTOMERS</span>
             <div className="w-6 h-6 rounded-md bg-amber-50 text-amber-600 flex items-center justify-center">
@@ -321,7 +321,7 @@ const Dashboard = ({ filters, setActiveTab }) => {
       {/* =================================================================== */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* REVENUE & PROFIT PERFORMANCE LINE CHART (~65% WIDTH / 2 COLS) */}
-        <div className="bg-white p-5 lg:p-6 rounded-xl border border-slate-200/90 shadow-2xs lg:col-span-2 space-y-4">
+        <div className="bg-white p-5 lg:p-6 rounded-xl border border-slate-200/90 shadow-2xs lg:col-span-2 space-y-4 hover:border-slate-300 transition-colors duration-200">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
               <h3 className="font-bold text-slate-900 text-base tracking-tight">
@@ -394,7 +394,7 @@ const Dashboard = ({ filters, setActiveTab }) => {
         </div>
 
         {/* REGIONAL PERFORMANCE HORIZONTAL BAR CHART (~35% WIDTH / 1 COL) */}
-        <div className="bg-white p-5 lg:p-6 rounded-xl border border-slate-200/90 shadow-2xs space-y-4">
+        <div className="bg-white p-5 lg:p-6 rounded-xl border border-slate-200/90 shadow-2xs space-y-4 hover:border-slate-300 transition-colors duration-200">
           <div>
             <h3 className="font-bold text-slate-900 text-base tracking-tight">
               Regional Performance
@@ -427,14 +427,14 @@ const Dashboard = ({ filters, setActiveTab }) => {
       {/* =================================================================== */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* WHAT'S HAPPENING? INSIGHTS (LEFT ~50%) */}
-        <div className="bg-white p-5 lg:p-6 rounded-xl border border-slate-200/90 shadow-2xs space-y-4">
+        <div className="bg-white p-5 lg:p-6 rounded-xl border border-slate-200/90 shadow-2xs space-y-4 hover:border-slate-300 transition-colors duration-200">
           <h3 className="font-bold text-slate-900 text-base tracking-tight">
             What's Happening?
           </h3>
 
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             {highlightList.map((hl, idx) => (
-              <div key={idx} className="flex items-start gap-2.5 text-xs text-slate-700 font-normal leading-relaxed">
+              <div key={idx} className="flex items-start gap-2.5 text-xs text-slate-700 font-normal leading-relaxed p-1.5 rounded-md hover:bg-slate-50 transition-colors duration-150">
                 <span className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-1.5 flex-shrink-0"></span>
                 <span>{hl}</span>
               </div>
@@ -443,7 +443,7 @@ const Dashboard = ({ filters, setActiveTab }) => {
         </div>
 
         {/* PRIORITY ACTIONS (RIGHT ~50% WITH BULB ICON & ACCENT BARS) */}
-        <div className="bg-white p-5 lg:p-6 rounded-xl border border-slate-200/90 shadow-2xs space-y-4">
+        <div className="bg-white p-5 lg:p-6 rounded-xl border border-slate-200/90 shadow-2xs space-y-4 hover:border-slate-300 transition-colors duration-200">
           <div className="flex items-center gap-2">
             <Lightbulb className="w-4.5 h-4.5 text-amber-500" />
             <h3 className="font-bold text-slate-900 text-base tracking-tight">Priority Actions</h3>
@@ -453,7 +453,7 @@ const Dashboard = ({ filters, setActiveTab }) => {
             {alertList.map((al, idx) => (
               <div
                 key={idx}
-                className={`p-3.5 rounded-lg border-l-4 text-xs space-y-1 bg-slate-50 ${
+                className={`p-3.5 rounded-lg border-l-4 text-xs space-y-1 bg-slate-50 hover:-translate-y-0.5 hover:shadow-xs transition-all duration-200 ease-out ${
                   al.type === 'warning'
                     ? 'border-l-red-500'
                     : al.type === 'success'
@@ -477,7 +477,7 @@ const Dashboard = ({ filters, setActiveTab }) => {
       {/* =================================================================== */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* TOP SELLING PRODUCTS TABLE (~65% WIDTH / 2 COLS) */}
-        <div className="bg-white p-5 lg:p-6 rounded-xl border border-slate-200/90 shadow-2xs lg:col-span-2 space-y-4">
+        <div className="bg-white p-5 lg:p-6 rounded-xl border border-slate-200/90 shadow-2xs lg:col-span-2 space-y-4 hover:border-slate-300 transition-colors duration-200">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-bold text-slate-900 text-base tracking-tight">
@@ -489,9 +489,9 @@ const Dashboard = ({ filters, setActiveTab }) => {
             </div>
             <button
               onClick={() => setActiveTab && setActiveTab('products')}
-              className="text-xs font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1 transition-colors"
+              className="text-xs font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1 transition-colors group"
             >
-              View Catalog <ChevronRight className="w-3.5 h-3.5" />
+              View Catalog <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
             </button>
           </div>
 
@@ -509,7 +509,7 @@ const Dashboard = ({ filters, setActiveTab }) => {
               </thead>
               <tbody className="divide-y divide-slate-100 text-xs font-normal">
                 {productList.map((prod, idx) => (
-                  <tr key={idx} className="hover:bg-slate-50/80 transition-colors">
+                  <tr key={idx} className="hover:bg-slate-50/80 transition-colors duration-150">
                     <td className="py-3 font-semibold text-slate-900">{prod.Product}</td>
                     <td className="py-3">
                       <span className="px-2.5 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200/60">
@@ -532,7 +532,7 @@ const Dashboard = ({ filters, setActiveTab }) => {
         </div>
 
         {/* CUSTOMER INSIGHTS CARD (~35% WIDTH / 1 COL) */}
-        <div className="bg-white p-5 lg:p-6 rounded-xl border border-slate-200/90 shadow-2xs flex flex-col justify-between space-y-4">
+        <div className="bg-white p-5 lg:p-6 rounded-xl border border-slate-200/90 shadow-2xs flex flex-col justify-between space-y-4 hover:border-slate-300 transition-colors duration-200">
           <div>
             <div className="flex items-center justify-between mb-3">
               <div>
@@ -545,9 +545,9 @@ const Dashboard = ({ filters, setActiveTab }) => {
               </div>
               <button
                 onClick={() => setActiveTab && setActiveTab('customers')}
-                className="text-xs font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-0.5 transition-colors"
+                className="text-xs font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-0.5 transition-colors group"
               >
-                Details <ChevronRight className="w-3.5 h-3.5" />
+                Details <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
               </button>
             </div>
 
@@ -581,9 +581,10 @@ const Dashboard = ({ filters, setActiveTab }) => {
 
           <button
             onClick={() => setActiveTab && setActiveTab('customers')}
-            className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition-all shadow-2xs flex items-center justify-center gap-1.5"
+            className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-xs font-semibold rounded-lg transition-all duration-200 shadow-2xs hover:-translate-y-0.5 hover:shadow-xs flex items-center justify-center gap-1.5 group"
           >
-            Customer 360 Analytics <ChevronRight className="w-3.5 h-3.5" />
+            <span>Customer 360 Analytics</span>
+            <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform duration-200" />
           </button>
         </div>
       </div>
