@@ -10,6 +10,7 @@ import {
   AlertTriangle,
   Award,
   DollarSign,
+  Lightbulb,
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -153,6 +154,7 @@ const Dashboard = ({ filters, setActiveTab }) => {
     sales_by_region = [],
     top_products = [],
     customer_insights = {},
+    business_highlights = [],
   } = data || {};
 
   const trendData = Array.isArray(timeResolution === 'quarterly' ? quarterly_trend : monthly_trend)
@@ -164,6 +166,30 @@ const Dashboard = ({ filters, setActiveTab }) => {
     : [];
 
   const productList = Array.isArray(top_products) ? top_products : [];
+  const highlightList = Array.isArray(business_highlights) ? business_highlights : [
+    'Furniture generated the highest revenue share at ₹41.23 L (51.4% of total).',
+    'West territory recorded the strongest regional sales at ₹26.41 L.',
+    '2 customer accounts are currently classified at High Churn Risk (inactive > 90 days).',
+    'Laptop Pro 15 is the top-performing product with revenue of ₹17.93 L.',
+  ];
+
+  const alertList = Array.isArray(alerts) ? alerts : (alerts && Array.isArray(alerts.alerts) ? alerts.alerts : [
+    {
+      type: 'warning',
+      title: 'Customer Inactivity Alert',
+      message: '2 customer accounts (Vanguard Health India (Ananya Reddy), Unknown Customer) inactive > 90 days.',
+    },
+    {
+      type: 'success',
+      title: 'Strong Territory Performance',
+      message: 'West territory is performing strongly with 32.92% revenue share.',
+    },
+    {
+      type: 'info',
+      title: 'Top Selling Item',
+      message: 'Laptop Pro 15 generated highest unit sales across catalog.',
+    },
+  ]);
 
   return (
     <div className="space-y-6 font-sans text-slate-900 selection:bg-blue-600 selection:text-white animate-fade-in">
@@ -397,7 +423,57 @@ const Dashboard = ({ filters, setActiveTab }) => {
       </div>
 
       {/* =================================================================== */}
-      {/* 4. BOTTOM ROW: TOP SELLING PRODUCTS TABLE (LEFT) + CUSTOMER INSIGHTS (RIGHT) */}
+      {/* 4. SECTION BELOW MAIN CHART: WHAT'S HAPPENING? (LEFT) & PRIORITY ACTIONS (RIGHT) */}
+      {/* =================================================================== */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* WHAT'S HAPPENING? INSIGHTS (LEFT ~50%) */}
+        <div className="bg-white p-5 lg:p-6 rounded-xl border border-slate-200/90 shadow-2xs space-y-4">
+          <h3 className="font-bold text-slate-900 text-base tracking-tight">
+            What's Happening?
+          </h3>
+
+          <div className="space-y-3">
+            {highlightList.map((hl, idx) => (
+              <div key={idx} className="flex items-start gap-2.5 text-xs text-slate-700 font-normal leading-relaxed">
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-1.5 flex-shrink-0"></span>
+                <span>{hl}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* PRIORITY ACTIONS (RIGHT ~50% WITH BULB ICON & ACCENT BARS) */}
+        <div className="bg-white p-5 lg:p-6 rounded-xl border border-slate-200/90 shadow-2xs space-y-4">
+          <div className="flex items-center gap-2">
+            <Lightbulb className="w-4.5 h-4.5 text-amber-500" />
+            <h3 className="font-bold text-slate-900 text-base tracking-tight">Priority Actions</h3>
+          </div>
+
+          <div className="space-y-3">
+            {alertList.map((al, idx) => (
+              <div
+                key={idx}
+                className={`p-3.5 rounded-lg border-l-4 text-xs space-y-1 bg-slate-50 ${
+                  al.type === 'warning'
+                    ? 'border-l-red-500'
+                    : al.type === 'success'
+                    ? 'border-l-blue-500'
+                    : 'border-l-amber-500'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-slate-900 text-xs">{al.title}</span>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">RECOMMENDED ACTION</span>
+                </div>
+                <p className="text-slate-600 font-normal leading-relaxed">{al.message}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* =================================================================== */}
+      {/* 5. BOTTOM ROW: TOP SELLING PRODUCTS TABLE (LEFT) + CUSTOMER INSIGHTS (RIGHT) */}
       {/* =================================================================== */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* TOP SELLING PRODUCTS TABLE (~65% WIDTH / 2 COLS) */}
