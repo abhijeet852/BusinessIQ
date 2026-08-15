@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getChurnPredictionML, getChurnModelComparison } from '../services/api';
 import { formatCurrency } from '../utils/formatters';
 import Customer360Modal from './Customer360Modal';
-import { ShieldAlert, Info, Award, CheckCircle2, Eye, HelpCircle } from 'lucide-react';
+import { ShieldAlert, Info, Award, CheckCircle2, Eye, AlertTriangle } from 'lucide-react';
 
 const ChurnML = ({ filters }) => {
   const [data, setData] = useState(null);
@@ -44,10 +44,29 @@ const ChurnML = ({ filters }) => {
     );
   }
 
-  const { metrics, customers } = data || {};
+  // Handle backend error gracefully
+  if (data?.error) {
+    return (
+      <div className="bg-white p-8 rounded-xl border border-slate-200/90 shadow-2xs text-center space-y-3 my-6 animate-fade-in font-sans">
+        <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center mx-auto font-bold text-xl">
+          <AlertTriangle className="w-6 h-6 text-amber-600" />
+        </div>
+        <h3 className="font-extrabold text-slate-900 text-base">No Churn Prediction Data Available</h3>
+        <p className="text-xs text-slate-500 max-w-md mx-auto">{data.error}</p>
+        <button
+          onClick={() => setThreshold(90)}
+          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-2xs transition-all"
+        >
+          Reset Threshold Filter
+        </button>
+      </div>
+    );
+  }
+
+  const { metrics, customers = [] } = data || {};
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6 font-sans text-slate-900 selection:bg-blue-600 selection:text-white animate-fade-in">
       {/* Header & Controls */}
       <div className="bg-white p-5 rounded-xl border border-slate-200/90 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -62,7 +81,7 @@ const ChurnML = ({ filters }) => {
           <select
             value={threshold}
             onChange={(e) => setThreshold(Number(e.target.value))}
-            className="bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-blue-500 font-semibold"
+            className="bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-blue-500 font-semibold cursor-pointer"
           >
             <option value={60}>60 Days Inactive</option>
             <option value={90}>90 Days Inactive</option>
@@ -94,22 +113,26 @@ const ChurnML = ({ filters }) => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 font-medium">
-                {comparison.comparison_table?.map((row, idx) => (
-                  <tr key={idx} className="hover:bg-slate-50 transition-colors">
-                    <td className="py-2.5 font-bold text-slate-900">{row.Algorithm}</td>
-                    <td className="py-2.5 text-center text-slate-800 font-semibold">{(row.Accuracy * 100).toFixed(1)}%</td>
-                    <td className="py-2.5 text-center text-slate-800 font-semibold">{(row.Precision * 100).toFixed(1)}%</td>
-                    <td className="py-2.5 text-center text-slate-800 font-semibold">{(row.Recall * 100).toFixed(1)}%</td>
-                    <td className="py-2.5 text-center text-blue-600 font-extrabold">{row['F1-Score']}</td>
-                    <td className="py-2.5 text-center">
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                        row.Status.includes('Selected') ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-slate-100 text-slate-600'
-                      }`}>
-                        {row.Status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
+                {comparison.comparison_table?.map((row, idx) => {
+                  const statusText = String(row?.Status || row?.status || '');
+                  const isSelected = statusText.includes('Selected');
+                  return (
+                    <tr key={idx} className="hover:bg-slate-50 transition-colors">
+                      <td className="py-2.5 font-bold text-slate-900">{row.Algorithm}</td>
+                      <td className="py-2.5 text-center text-slate-800 font-semibold">{(row.Accuracy * 100).toFixed(1)}%</td>
+                      <td className="py-2.5 text-center text-slate-800 font-semibold">{(row.Precision * 100).toFixed(1)}%</td>
+                      <td className="py-2.5 text-center text-slate-800 font-semibold">{(row.Recall * 100).toFixed(1)}%</td>
+                      <td className="py-2.5 text-center text-blue-600 font-extrabold">{row['F1-Score']}</td>
+                      <td className="py-2.5 text-center">
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                          isSelected ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-slate-100 text-slate-600'
+                        }`}>
+                          {statusText || 'Available'}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -121,7 +144,7 @@ const ChurnML = ({ filters }) => {
         <div className="p-5 border-b border-slate-100 flex items-center justify-between">
           <div>
             <h3 className="font-extrabold text-slate-900 text-sm tracking-tight">Customer Churn Risk Assessment</h3>
-            <p className="text-xs text-slate-500 mt-0.5">Click any customer row to inspect their 360 profile, feature explainability, and action plan</p>
+            <p className="text-xs text-slate-500 mt-0.5 font-normal">Click any customer row to inspect their 360 profile, feature explainability, and action plan</p>
           </div>
         </div>
 
@@ -139,41 +162,46 @@ const ChurnML = ({ filters }) => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs font-medium">
-              {customers?.map((cust) => (
-                <tr
-                  key={cust.Customer_ID}
-                  onClick={() => setSelectedCustomerId(cust.Customer_ID)}
-                  className="hover:bg-blue-50/50 cursor-pointer transition-colors"
-                >
-                  <td className="py-3.5 px-4 font-bold text-slate-900">{cust.Customer_ID}</td>
-                  <td className="py-3.5 px-4 font-semibold text-slate-800">{cust.Customer_Name}</td>
-                  <td className="py-3.5 px-4 font-extrabold text-slate-900">{cust.Churn_Probability}%</td>
-                  <td className="py-3.5 px-4">
-                    <span className={`inline-flex px-2 py-0.5 rounded text-[10px] font-bold ${
-                      cust.Risk_Level.includes('High')
-                        ? 'bg-red-50 text-red-700 border border-red-200'
-                        : cust.Risk_Level.includes('Medium')
-                        ? 'bg-amber-50 text-amber-700 border border-amber-200'
-                        : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                    }`}>
-                      {cust.Risk_Level}
-                    </span>
-                  </td>
-                  <td className="py-3.5 px-4 text-right text-slate-600 font-semibold">{cust.Recency_Days} days</td>
-                  <td className="py-3.5 px-4 text-right font-extrabold text-slate-900">{formatCurrency(cust.Total_Spending)}</td>
-                  <td className="py-3.5 px-4 text-center">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedCustomerId(cust.Customer_ID);
-                      }}
-                      className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100 hover:bg-blue-600 hover:text-white transition-colors"
-                    >
-                      <Eye className="w-3.5 h-3.5" /> Explain
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {customers?.map((cust) => {
+                const riskText = String(cust?.Risk_Level || cust?.risk_level || '');
+                const isHigh = riskText.includes('High');
+                const isMedium = riskText.includes('Medium');
+                return (
+                  <tr
+                    key={cust.Customer_ID}
+                    onClick={() => setSelectedCustomerId(cust.Customer_ID)}
+                    className="hover:bg-blue-50/50 cursor-pointer transition-colors"
+                  >
+                    <td className="py-3.5 px-4 font-bold text-slate-900">{cust.Customer_ID}</td>
+                    <td className="py-3.5 px-4 font-semibold text-slate-800">{cust.Customer_Name}</td>
+                    <td className="py-3.5 px-4 font-extrabold text-slate-900">{cust.Churn_Probability}%</td>
+                    <td className="py-3.5 px-4">
+                      <span className={`inline-flex px-2 py-0.5 rounded text-[10px] font-bold ${
+                        isHigh
+                          ? 'bg-red-50 text-red-700 border border-red-200'
+                          : isMedium
+                          ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                          : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                      }`}>
+                        {riskText || 'Low'}
+                      </span>
+                    </td>
+                    <td className="py-3.5 px-4 text-right text-slate-600 font-semibold">{cust.Recency_Days} days</td>
+                    <td className="py-3.5 px-4 text-right font-extrabold text-slate-900">{formatCurrency(cust.Total_Spending)}</td>
+                    <td className="py-3.5 px-4 text-center">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedCustomerId(cust.Customer_ID);
+                        }}
+                        className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100 hover:bg-blue-600 hover:text-white transition-colors"
+                      >
+                        <Eye className="w-3.5 h-3.5" /> Explain
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
